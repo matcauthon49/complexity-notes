@@ -1,7 +1,3 @@
-\begin{center}
-	\line(1,0){70}
-\end{center}
-
 \paragraph{Question 3.1} Show that the following language is undecidable:
 \begin{equation*}
 	\left\{\lfloor M\rfloor: M \text{ is a machine that runs in } 100n^2+200 \text{ time}\right\}
@@ -76,5 +72,7 @@ Clearly there exists no Turing machine which computes this function, since it di
 \paragraph{Answer.} \begin{itemize}
 	\item[(a)] We can incrementally compute $H(n)$ by starting from $i=1$ and proceeding to $i\leq\log n$. To do this we need to simulate $\log\log n$ machines on inputs of length $\log n$, where the number of steps is at most $o(n)$. Furthermore, we need to compute $\sat$ on these imputs, but this can be done simply by brute force since the size of the $\sat$ instance is at most $\log n$. The entire procedure is polynomial time.
 	
-	\item[(b)] 
+	\item[(b)] Suppose that $\sat_H$ is $\np$-complete. Then there is a polytime reduction from $\sat$ to $\sat_H$. Let the time complexity of this reduction be $p(|x|)$ for some polynomial $p$, and let the monomial corresponding to the leading coefficient of $p$ be $n^c$ for some constant $c$. Since $H(n)$ grows faster than any constant, we take instances $n$ of size such that $H(n)>2^c$. Now consider a $\sat$ instance of the size $n$. By the time complexity of the reduction, we can reduce it to a $\sat_H$ instance of length at most $n^c$.
+	
+	The size of a $\sat_H$ instance is $|x|+|x|^{H(|x|)}$, where $|x|$ is the size of the $\sat$ instance encoded in the $\sat_H$ instance. Suppose that the size of the $\sat$ instance is greater than  $n^{c/2^c}$. Then the total size of the $\sat_H$ instance will be $>{n}^{c}$. Thus, the size of the $\sat$ instance must decrease with each iteration of reduction. It follows that if we `hard-code' the solution to all $\sat$ instances in a TM up till the first $n$ such that $H(n)>2^c$, we can solve all the others in polynomial time using downward self-reducibility. We are done. 
 \end{itemize}

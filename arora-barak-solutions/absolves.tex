@@ -29,6 +29,8 @@
 %\usepackage[sc]{mathpazo}% A nice font, alternative to CM
 %\usepackage[headings]{fullpage}% Make margins smaller
 \usepackage[a4paper, margin = 3.175cm, includehead, includefoot]{geometry}% May be used to set margins
+\usepackage{centernot}
+
 
 \usepackage{blindtext}% For dummy text
 % -------------------------------------------------------------------------
@@ -110,7 +112,7 @@
 	\maketitle
 	\pagestyle{fancy}
 	\begin{abstract}
-		 The following document contains solutions to the book `Computational Complexity' by Sanjeev Arora and Boaz Barak. Some trivial problems have been omitted.
+		 The following document contains solutions to selected problems in the book `Computational Complexity' by Sanjeev Arora and Boaz Barak. Some problems which are either trivial or require nothing more than brute force/proof mirroring have been omitted.
 	\end{abstract}
 
 	\newpage
@@ -130,6 +132,15 @@
 	\label{sec:diagonalization}
 	\input{tex_files/ch3}
 	
+	\newpage
+	\section{Space Complexity}
+	\label{sec:space-complexity}
+	\input{tex_files/ch4}
+	
+	\newpage
+	\section{The Polynomial Hierarchy and Alternations}
+	\label{sec:polynomial-hierarchy}
+	\input{tex_files/ch5}
 	
 
 
