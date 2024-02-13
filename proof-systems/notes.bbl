@@ -1,0 +1,63 @@
+\begin{thebibliography}{LFKN92}
+
+\bibitem[Bab85]{10.1145/22145.22192}
+L~Babai.
+\newblock Trading group theory for randomness.
+\newblock In {\em Proceedings of the Seventeenth Annual ACM Symposium on Theory
+  of Computing}, STOC '85, page 421–429, New York, NY, USA, 1985. Association
+  for Computing Machinery.
+
+\bibitem[For87]{10.1145/28395.28418}
+L.~Fortnow.
+\newblock The complexity of perfect zero-knowledge.
+\newblock In {\em Proceedings of the Nineteenth Annual ACM Symposium on Theory
+  of Computing}, STOC '87, page 204–209, New York, NY, USA, 1987. Association
+  for Computing Machinery.
+
+\bibitem[GH98]{10.1016/S0020-0190(98)00116-1}
+Oded Goldreich and Johan H\r{a}stad.
+\newblock On the complexity of interactive proofs with bounded communication.
+\newblock {\em Inf. Process. Lett.}, 67(4):205–214, aug 1998.
+
+\bibitem[GKR15]{10.1145/2699436}
+Shafi Goldwasser, Yael~Tauman Kalai, and Guy~N. Rothblum.
+\newblock Delegating computation: Interactive proofs for muggles.
+\newblock {\em J. ACM}, 62(4), sep 2015.
+
+\bibitem[GMR85]{10.1145/22145.22178}
+S~Goldwasser, S~Micali, and C~Rackoff.
+\newblock The knowledge complexity of interactive proof-systems.
+\newblock In {\em Proceedings of the Seventeenth Annual ACM Symposium on Theory
+  of Computing}, STOC '85, page 291–304, New York, NY, USA, 1985. Association
+  for Computing Machinery.
+
+\bibitem[GS86]{10.1145/12130.12137}
+S~Goldwasser and M~Sipser.
+\newblock Private coins versus public coins in interactive proof systems.
+\newblock In {\em Proceedings of the Eighteenth Annual ACM Symposium on Theory
+  of Computing}, STOC '86, page 59–68, New York, NY, USA, 1986. Association
+  for Computing Machinery.
+
+\bibitem[IY87]{10.5555/646752.704748}
+Russell Impagliazzo and Moti Yung.
+\newblock Direct minimum-knowledge computations.
+\newblock In {\em A Conference on the Theory and Applications of Cryptographic
+  Techniques on Advances in Cryptology}, CRYPTO '87, page 40–51, Berlin,
+  Heidelberg, 1987. Springer-Verlag.
+
+\bibitem[Lau83]{LAUTEMANN1983215}
+Clemens Lautemann.
+\newblock Bpp and the polynomial hierarchy.
+\newblock {\em Information Processing Letters}, 17(4):215--217, 1983.
+
+\bibitem[LFKN92]{10.1145/146585.146605}
+Carsten Lund, Lance Fortnow, Howard Karloff, and Noam Nisan.
+\newblock Algebraic methods for interactive proof systems.
+\newblock {\em J. ACM}, 39(4):859–868, oct 1992.
+
+\bibitem[Sha92]{10.1145/146585.146609}
+Adi Shamir.
+\newblock Ip = pspace.
+\newblock {\em J. ACM}, 39(4):869–877, oct 1992.
+
+\end{thebibliography}

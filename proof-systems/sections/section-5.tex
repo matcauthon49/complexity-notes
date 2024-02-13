@@ -1,0 +1,160 @@
+\section{IPs with Bounded Resources}
+
+Until now we have looked at the class $\ip$ on a global level and considered its relationships with other well-known complexity classes. We have also looked at the details of the randomness and interaction that the prover and verifier can use to prove a statement. We now turn our attention to understanding the kind of problems that the prover and the verifier can solve when we place bounds on the amount of information they can communicate.
+
+\begin{definition}{$\ip[\mathsf{pc}=1]$}
+	The class $\ip[\pc=1]$ consists of IPs in which the prover only communicates $1$ bit of information.
+\end{definition}
+
+This class contains $\mathsf{GNI}$! Thus we can reasonably believe that even $1$ bit of prover communication allows problems outside of $\p$ to be decided. We will attempt to create a rigorous theory for IPs with bounded resources, first described by Goldreich and H\aa stad in \cite{10.1016/S0020-0190(98)00116-1}.
+
+\subsection{Languages Decidable with Limited Resources}
+
+\begin{definition}[IPs with bounded resources]
+	The class $\ip[\pc,\vc,\vr]$ is the class of languages decidable by an IP in which the prover sends $\pc$ bits, the verifier sends $\vc$ bits, and the amount of verifier randomness is $\vr$ bits.
+\end{definition}
+
+The definition of $\am[\pc,\vc,\vr]$ is analogous. It turns out that there is a large number of theorems that determine what languages are decidable by such IPs.
+
+\begin{theorem}
+	The following theorems give a relationship between the communication complexity of IPs and the time complexity of the languages decidable by them.
+	\begin{align*}
+		\ip[\pc,\vc,\vr]&\subseteq\mathbf{DTIME}(2^{O(\pc+\vc+\vr)}\mathsf{poly}(n))\\
+		\ip[\pc,\vc,*]&\subseteq\mathbf{BPTIME}(2^{O(\pc+\vc)}\mathsf{poly}(n))\\
+		\am[\pc,*,*]&\subseteq\mathbf{BPTIME}(2^{O(\pc\log\pc)}\mathsf{poly}(n))\\
+		\ip[\pc,*,*]&\subseteq\mathbf{BPTIME}(2^{O(\pc\log\pc)}\mathsf{poly}(n))^{\mathbf{NP}}
+	\end{align*}
+	Here, $n$ is the number of messages exchanged.
+	\label{thm:boundedip}
+\end{theorem}
+
+\subsection{Game Trees}
+
+\begin{definition}[Transcript]
+	A transcript of an interaction is the tuple $(a_1,b_1,\dots,a_n,b_n)$ of messages exchanged. An augmented transcript is the tuple $(a_1,b_1,\dots,a_n,b_n,r)$, where $r$ is the verifier randomness.
+\end{definition}
+
+Fixing a verifier $\verifier$ and an instance $x$, we can define the game tree $T=T(\verifier,x)$ of $\verifier(x)$ as the tree of all possible augmented transcripts. The game tree is of height $k$, with each layer labeled $0,\dots,k-1$. The prover communicates at each $2i$ layer and the verifier communicates at each $2i+1$ layer. In this setting,
+
+\begin{itemize}
+	\item edges from $2i$ to $2i+1$ are each of the possible messages communicated by the prover when given the previous node,
+	\item edges from $2i+1$ to $2(i+1)$ are each of the possible messages communicated by the verifier when given the previous node,
+	\item the last set of edges is all the verifier random strings compatible with the transcript.
+\end{itemize}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		[level distance=20mm,
+		every node/.style={circle, draw, inner sep=1pt},
+		level 1/.style={sibling distance=15mm},
+		level 2/.style={sibling distance=10mm},
+		level 3/.style={sibling distance=6.67mm}]
+		\node {$\perp$}
+		child {}
+		child {}
+		child {}
+		child {node {$a_1$}
+			child {}
+			child {}
+			child {}
+			child {node {$b_1$}
+				child {}
+				child {}
+				child {}
+				child {node {$a_2$}
+					child {}
+					child {}
+					child {}
+				}
+			}
+		};
+	\end{tikzpicture}
+	\caption{A Game Tree.}
+	\label{fig:gametree}
+\end{figure}
+
+We can use the game tree in order to determine the complexity of the languages decidable by it, since it forms a complete representation of some interactive proof. To do this, we will approximate the \textit{value} of a tree.
+
+\begin{definition}[Value]
+	The value $\mathsf{val}(T)$ is the value of the root, where values of nodes are defined as follows:
+	\begin{enumerate}
+		\item the value of a leaf $(a_1,b_1,\dots,a_n,b_n,r)$ is $\verifier(x, a_1, b_1,\dots,a_n, b_n,r)\in\{{0,1}\}$,
+		\item the value of a node at $2i$ is the maximum of the values of its children,
+		\item the value of a node at $2i+1$ is the average of the values of the children weighted by the probability that the child is selected.
+	\end{enumerate}
+\end{definition}
+
+We notice that if $x\in L$ then $\mathsf{val}(T)\geq 2/3$, since a high proportion of paths will lead to an accepting leaf, while $\mathsf{val}(T)\leq 1/3$ if $x\notin L$ since even a cheating prover that attempts to maximize acceptance will not be able to convince the verifier in more than $1/3$rd of the choices taken by the verifier.
+
+\textbf{Note.} The game tree is unique to a particular IP and not to the set of all possible IPs. To better understand this, consider that $\mathsf{val}(T)=1$ in case of IPs with perfect completeness. This is because the value of each leaf node is $1$ -- given any particular verifier random string, regardless of what message $\verifier$ sends, the prover will always be able to convince the verifier. 
+
+We will now attempt to place a bound on the complexity required to approximate $\mathsf{val}(T)$.
+
+\subsubsection{IPs with All Parameters Bounded}
+
+We would like to approxiate $\mathsf{val}(T)$ up to an error of $\pm 1/6$. Let $c=\pc+\vc+\vr$ be the total communication complexity and randomness.
+
+\begin{proof}[Proof of theorem \ref{thm:boundedip} (a).]
+	We note that the number of possible transcripts is $\leq 2^c$, and the number of augmentations is also $\leq 2^c$. Then it follows that the total number of internal nodes is $2^{O(c)}$.
+	
+	We can thus write out the entire tree in $2^{O(c)}\mathsf{poly}(n)$ time, and furthermore compute the value in the same amount by recursion. To calculate the value, we associate each node with its consistent random strings, and then at every verifier step we iterate over the random strings and take the weighted average. Thus, at each verifier node, the step partitions the randomness among its children (this is not the case with the prover, since the prover cannot be controlled using the verifier randomness).
+\end{proof}
+
+\subsection{IPs with Unlimited Randomness}
+
+We will now consider the class $\ip[\pc, \vc, *]$ of interactive proofs where the verifier randomness is unlimited. Intuitively this allows for a somewhat greater class of languages to be accepted, dependent on $\mathbf{DTIME}\stackrel{?}{=}\mathbf{BPTIME}$. We let $c=\pc+\vc$.
+
+The main addition to the game trees of $\ip[\pc, \vc, *]$ is that the number of augmentations is now $2^{\poly(n)}$, since a polynomial time verifier can make use of as many random bits as it desires up to some $\poly(n)$. We can thus not construct the game tree in the allowed time. However, since we are working in $\mathbf{BPTIME}$, we will use a randomized algorithm to approximate $\mathsf{val}(T)$.
+
+$\vr$ is still defined, albeit as a function of $n$.
+
+\begin{figure}[h]
+ 	\begin{mdframed}[
+ 		linecolor=black,
+ 		linewidth=1pt,
+ 		roundcorner=5pt,
+ 		backgroundcolor=white,
+ 		userdefinedwidth=\textwidth,
+ 		]
+ 		\vspace{2mm}
+ 		\begin{enumerate}
+ 			\item Sample $R=\{r_1,r_2,\dots, r_n\}\in\{0,1\}^\vr$, with $m=\Theta(2^c\cdot c)$.\vspace{1mm}
+ 			\item Compute $\mathsf{val}(T[R])$, where $T[R]$ is the residual game tree obtained by omitting the randomness not in $R$.
+ 		\end{enumerate}
+ 		\vspace{2mm}
+ 	\end{mdframed}
+ 	\caption{Probabilistic Algorithm for $\ip[\pc,\vc,*]$.}
+ 	\label{fig:ippcvc*}
+\end{figure}
+
+The algorithm runs in time $2^{O(c)}\poly(n)$, since $|T[R]|=2^{O(c)}|R|=2^{O(c)}$.
+ 
+\begin{lemma}
+	$\Pr_R\left[|\mathsf{val}(T[R])-\mathsf{val}(T)|\leq\frac{1}{10}\right]\geq \frac{99}{100}$.
+\end{lemma}
+
+\begin{proof}
+	We use a concentration argument. Begin by defining $\verifier^R$ to be the verifier when it remains constrained to the randomness in $R$ versus $\verifier$ to be the verifier when it chooses $\vr$ bits of randomness. It follows that 
+	$$\mathsf{val}(T)=\left[\text{maximum acceptance probability of $\verifier^R$ with any prover strategy}\right]$$
+	For any given prover strategy $\tilde{\prover}$, we define
+	\begin{align*}
+		\Delta(\tilde{\prover},R)&=\Pr_{r\in R}\left[\left\langle\tilde{\prover},\verifier(x;r)=1\right\rangle\right]-\Pr_{r\in \{0,1\in\vr\}}\left[\left\langle\tilde{\prover},\verifier(x;r)=1\right\rangle\right]\\
+		&=\Pr\left[\left\langle\tilde{\prover},\verifier^R(x)=1\right\rangle\right]-\Pr\left[\left\langle\tilde{\prover},\verifier(x)=1\right\rangle\right]
+	\end{align*}
+
+	We will now show that $|\Delta(\tilde{\prover},R)|$ is small over the choice of $R$. To do this, define the variables $z_i=\langle\tilde{\prover},\verifier(x;r_i)=1\rangle$ where $r_i$ is the $i^\text{th}$ string in $R$. Then the variables $z_i$ are independently distributed, since $r_i$ are independently distributed.
+	
+	Furthermore, we have $\E[z_i]=\Pr\left[\langle\tilde{\prover},\verifier(x)=1\rangle\right]$, and that
+	$$\frac{z_1+\dots+z_m}{m}=\Pr\left[\left\langle\tilde{\prover},\verifier^R(x)=1\right\rangle\right]$$
+	
+	Then we can bound the probability immmediately by using a Chernoff bound to get
+	$$\Pr\left[\left|\Delta(\tilde{\prover},R)\right|\geq\frac{1}{10}\right]\leq\Pr\left[\left|\frac{z_1+\dots+z_m}{m}-\E[z_i]\right|\geq\frac{1}{10}\right]\leq2e^{-2m\left(1/10\right)^2}$$
+	
+	Thus for any \textit{particular} prover, the probability that $|\Delta(\tilde{\prover},R)|$ is large is quite low. We consider all possible provers, the number of which is $2^{c2^c}$, since each prover is a function from a partial transcript to the next prover string, and thus less than $(2^c)^{2^c}$. Taking a union bound over all provers, we get
+	$$\Pr_R\left[\exists\tilde{\prover}:\left|\Delta(\tilde{\prover},R)\right|\geq\frac{1}{10}\right]\leq 2^{c2^c}\cdot2e^{-2m\left(1/10\right)^2}\leq\frac{1}{100}$$
+	if we choose the right value of $m$, which is $\Theta(c2^c)$.
+\end{proof}
+
+The above serves as a proof for Theorem $\ref{thm:boundedip}$ $(b)$.
+

@@ -1,0 +1,129 @@
+\section{Containments of $\ip$}
+Before we prove the other side of $\ip=\pspace$, we turn our attention to understanding more containments of $\ip$. The techniques developed in this section will be integral in proving that $\pspace\subseteq\ip$ and in showing how IPs are developed for problems which don't have the nice properties of $\mathsf{GNI}$. In particular, we will be proving the following two theorems.
+
+\begin{theorem}
+	\label{thm:unsat}
+	$\mathsf{UNSAT}\in\ip$. Since $\mathsf{UNSAT}$ is $co\np$-complete, $co\np\subseteq\ip$.
+\end{theorem}
+\begin{theorem}
+	$\#\mathsf{SAT}\in\ip$. Since $\#\mathsf{SAT}$ is $\p^{\#\p}$-complete, $\p^{\#\p}\subseteq\ip$.
+\end{theorem}
+
+\subsection{Arithmetization}
+
+We consider \textit{boolean formulae} of the form $\phi(x_1,\dots,x_n)$, which are trees in which
+\begin{itemize}
+	\item Every leaf node is labelled with a variable $x_i$, and
+	\item Every internal node is a logical operator $(\wedge, \vee, \neg).$
+\end{itemize}
+
+The goal of the arithmetization procedure is to reduce each boolean formula to a corresponding polynomial, such that $\phi(x_1,\dots,x_n)=p(x_1,\dots,x_n)$. Furthermore, we require $\mathsf{deg}(p)\leq|\phi|$, and that any evaluation of $p$ at a point can be done in $|\phi|$ operations.
+
+This can be accomplished through replacing each variable with the following.
+\begin{align*}
+	\neg x&\Leftrightarrow 1-x\\
+	x_1\wedge x_2&\Leftrightarrow x_1\cdot x_2\\
+	x_1\vee x_2&\Leftrightarrow x_1+x_2
+\end{align*}
+
+\subsubsection{Application to $\mathsf{UNSAT}$}
+
+Let $\phi$ be a $\mathsf{3CNF}$. Then we have
+\begin{align*}
+	\phi\in\mathsf{UNSAT}&\implies\sum_{a_1,a_2,\dots,a_n\in\{0,1\}}p(a_1,\dots,a_n)=0\\ \phi\notin\mathsf{UNSAT}&\implies\sum_{a_1,a_2,\dots,a_n\in\{0,1\}}p(a_1,\dots,a_n)>0
+\end{align*}
+
+In other words, the sum of the corresponding polynomial over the boolean hypercube is zero if $\phi\in\mathsf{UNSAT}$, since on every input $\phi$ evaluates to $0$, and strictly greater than $0$ if $\phi\notin\mathsf{UNSAT}$, since $\phi$ must have at least one satisfying assignment. Furthermore, this fact remains true over all finite fields of sufficiently large size (in particular, size greater than $2^n3^m$, where $3^m$ is the number of formulae, and $2^n$ is the number of satisfying assignments).
+
+We will now use this fact to obtain an IP for $\mathsf{UNSAT}$.
+
+\subsection{The Sumcheck Protocol}
+
+Sumcheck is a powerful and well-studied protocol first introduced in 1992 \cite{10.1145/146585.146605}. Many improvements to sumcheck have been made over the years, and today it is regularly used in prototype cryptographic systems as an interactive proof system for verifying polynomial addition.
+
+\begin{definition}[Sumcheck.]
+	The sumcheck protocol is an IP for verifying that, given $(p,n,H,\gamma,\F)$, where $p$ is a polynomial of degree $n$ that takes $m$ variables, $H$ is any subset of $\F$, and $\gamma\in\F$,
+	$$\sum_{\mathbf{x}\in H^m}p(\mathbf{x})=\gamma.$$
+	The protocol for sumcheck is given in \ref{fig:3}.
+\end{definition}
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{enumerate}
+			\item $\prover$ calculates the polynomial 
+			$$p_1(x)=\sum_{a_2,\dots,a_n\in H}p(x, a_2,\dots,a_n)$$ and sends it to $\verifier$. 
+			\item $\verifier$ checks whether $\sum_{a_1\in H}p_1(a_1)=\gamma$. If the check passes, it samples a challenge $w_1\in\F$ and sends it to $\prover$.
+			\item $\prover$ calculates $$p_2(x)=\sum_{a_3,\dots,a_n\in H}p(w_1,x, a_3,\dots,a_n)$$ and sends it to $\verifier$.
+			\item $\verifier$ checks whether $\sum_{\mathbf{x}\in H^m}p_2(x)=p_1(w_1)$. If the check passes, it samples another challenge $w_2\in\F$ and sends it to the prover.
+			\item The protocol proceeds as in the previous two rounds. In the $i^{\text{th}}$ round, $\prover$ calculates $p_i(x)$ and sends it to the verifier, and the verifier checks whether $\sum_{\mathbf{x}\in H^m}p_i(x)=p_{i-1}(w_{i-1}).$
+			\item In the last round, $\prover$ sends the polynomial $p_n(x)=p(w_1,\dots,x)$. $\verifier$ samples $w_n$ and checks whether $p_n(w_n)=p(w_1,\dots,w_n)$, and outputs the result.
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{The Sumcheck Protocol.}
+	\label{fig:3}
+\end{figure}
+
+\textbf{Note.} It is interesting to see that the verifier's messages in this protocol are all completely \textit{random}. This fact is of independent cryptographic interest, and can be used to make the protocol non-interactive.
+\vspace{3mm}
+
+\begin{theorem}
+	Sumcheck is a correct IP for the sum of polynomial evaluations over a subset.
+\end{theorem}
+
+\begin{proof}
+	We begin by checking completeness. Given that $\sum_{\mathbf{x}\in H^m}p(\mathbf{x})=\gamma$, an honest prover can always form the correct polynomials $p_i$ such that any challenge by the verifier is always answered in the affirmative. 
+	
+	The more difficult check is that of soundness. We will show that given $\sum_{\mathbf{x}\in H^m}p(\mathbf{x})\neq\gamma$, $\verifier$ outputs $1$ with probability
+	$$\frac{n\deg(p)}{|\F|}$$
+	
+	Define $W$ be the event of $\verifier$ accepting, and let $E_i$ be the event that $\tilde{p}_i=p_i$ (where $\tilde{p}_i$ is the polynomial output by a potentially dishonest prover.) We need to place a bound on $\Pr[W]$.
+	
+	We will begin by showing that for $j\in[n]$,
+	$$\Pr[W]\leq\frac{(n-j+1)\deg(p)}{|\F|}+\Pr[W\mid\wedge_{i=j}^n E_i]$$
+	
+	To show this, we use the Schwartz-Zippel Lemma.
+	
+	\begin{lemma}[Schwartz-Zippel]
+		\label{lem:schwartz-zippel}
+		Let $f\in\F[x_1,\dots,x_n]$ be a nonzero multivariate polynomial of degree $d$. Then for any set $S\subseteq\F$, we have
+		$$\Pr_{\alpha_i\leftarrow S}[f(\alpha_1,\dots, \alpha_n) = 0]=\frac{d}{|S|}.\qed$$
+	\end{lemma}
+	
+	We proceed by induction. For the base case $j=n, \Pr[W]=\Pr[W\mid E_n]+\Pr[W\mid\overline{E_n}]$.
+	$$\Pr[W\mid\overline{E_n}]=\Pr[W\mid\tilde{p}_n(w_n)=p_n(w_n)\mid\tilde{p_n}\neq p_n]\leq\frac{\deg{p_n-\tilde{p}_n}}{|\F|}\leq\frac{\deg(p)}{|\F|}$$
+	
+	Where the inequality comes from \ref{lem:schwartz-zippel}. For the inductive step,
+	\begin{align*}
+		\Pr[W]&\leq\frac{(n-j+1)\deg(p)}{|\F|}+\Pr[W\mid\wedge_{i=j}^n E_i]\\
+		&\leq\frac{(n-j+1)\deg(p)}{|\F|}+\Pr[W\mid E_{j-1}\wedge\wedge_{i=j}^n E_i]+\Pr[W\mid\overline{E_{j-1}}\wedge\wedge_{i=j}^n E_i]\\
+		&\leq\frac{(n-j+1)\deg(p)}{|\F|}+\frac{\deg(p)}{|\F|}+\Pr[W\mid\wedge_{i=j-1}^n E_i]\\
+		&\leq\frac{(n-(j-1)+1)\deg(p)}{|\F|}+\Pr[W\mid\wedge_{i=j-1}^n E_i]
+	\end{align*}
+	It follows that for $j=1$, we have
+	$$\Pr[W]\leq\frac{n\deg(p)}{|\F|}+\Pr[W\mid\wedge_{i=1}^nE_i]$$
+	But $\Pr[W\mid E_1]=0$, since $\sum_{\alpha\in H}p_1(\alpha)\neq\gamma$. Thus, we can conclude that
+	$$\Pr[W]\leq\frac{n\deg(p)}{|\F|}.$$
+\end{proof}
+
+\subsection{An IP for $\mathsf{UNSAT}$}
+
+We can obtain an IP for $\mathsf{UNSAT}$ from sumcheck, thereby proving \ref{thm:unsat}. The IP proceeds as follows. Both the prover and the verifier pick a prime $q>2^n3^m$ and work over $\F_q$ (to do this, the $\prover$ sends $\verifier$ a \textit{claimed} prime, which $\verifier$ can verify in polytime since $\mathsf{PRIMES}\in\p$). They then arithmetize $\phi\mapsto p$. Finally, the prover sends the verifier a claimed value of $\sum_{\mathbf{x}\in\{0,1\}}p(\mathbf{x})$, and they run the sumcheck protocol. If $\verifier$ accepts on $\mathbf{x}=\mathbf{0}$, then it outputs $1$, otherwise it outputs $0$.
+
+\subsection{An IP for $\#\mathsf{SAT}$}
+
+The IP for $\#\mathsf{SAT}$ is similar, but unlike $\mathsf{UNSAT}$, we require that we exactly count the number of satisfying assignments. This means that the arithmetization we described in $2.1$ does not immediately work since $x_1+x_2\geq1$, and in particular, $\phi(x_1,\dots, x_n)=0$ implies that $p(x_1,\dots,x_n)=0$, but $\phi(x_1,\dots, x_n)=1$ only implies that $p(x_1,\dots,x_n)>0$. Fortunately, there is a simple fix:
+\begin{align*}
+	\neg x&\Leftrightarrow 1-x\\
+	x_1\wedge x_2&\Leftrightarrow x_1\cdot x_2\\
+	x_1\vee x_2&\Leftrightarrow x_1+x_2-xy
+\end{align*}
+
+The $-xy$ term in $x_1\vee x_2$ ensures that $x_1\vee x_2\leq 1$, and we can thus adapt the $\mathsf{UNSAT}$ protocol for $\#\mathsf{SAT}$. Note that $q>2^n$ suffices, since $p$ is boolean on boolean inputs.

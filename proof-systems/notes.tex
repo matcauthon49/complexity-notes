@@ -1,0 +1,125 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=1in, includeheadfoot]{geometry}
+
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{makeidx}
+\usepackage{thmtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{algpseudocode}
+\usepackage{multirow}
+
+
+\usetikzlibrary{positioning}
+
+\usepackage{thmtools}
+\usepackage[skip=6pt]{parskip}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead[L]{\textbf{A Primer on Probabilistic Proof Systems}}
+\fancyhead[R]{\thepage}
+\fancyfoot{}
+
+\setlength\parindent{0pt}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=red,
+	filecolor=red,  
+	citecolor=red,    
+	urlcolor=blue,
+	pdftitle={A Primer on Probabilistic Proof Systems},
+	pdfpagemode=FullScreen,
+}
+
+\usepackage[framemethod=tikz]{mdframed}
+
+\declaretheorem[name=Theorem, numberwithin=section]{theorem}
+\declaretheorem[name=Lemma, numberwithin=section]{lemma}
+\declaretheorem[name=Inequality, numberwithin=section]{inequality}
+\declaretheorem[name=Definition, numberwithin=section]{definition}
+
+\usepackage[english]{babel}
+\title{\textbf{A Primer on Probabilistic Proof Systems}}
+\author{Naman Kumar}
+
+
+\newcommand{\np}{\mathbf{NP}}
+\newcommand{\p}{\mathbf{P}}
+\newcommand{\ip}{\mathbf{IP}}
+\newcommand{\pspace}{\mathbf{PSPACE}}
+\newcommand{\am}{\mathbf{AM}}
+\newcommand{\ma}{\mathbf{MA}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\rel}{\mathcal{R}}
+\newcommand{\lang}{\mathcal{L}}
+\newcommand{\query}{\mathcal{Q}}
+\newcommand{\prover}{\mathcal{P}}
+\newcommand{\verifier}{\mathcal{V}}
+\newcommand{\decision}{\mathcal{D}}
+\newcommand{\simulator}{\mathcal{S}}
+\newcommand{\sat}{\mathsf{SAT}}
+\newcommand{\ph}{\mathbf{PH}}
+\newcommand{\hvzk}{\mathbf{HVZK}}
+\newcommand{\zk}{\mathbf{ZK}}
+\newcommand{\pzk}{\mathbf{PZK}}
+\newcommand{\czk}{\mathbf{CZK}}
+\newcommand{\szk}{\mathbf{SZK}}
+\newcommand{\pc}{\mathsf{pc}}
+\newcommand{\vc}{\mathsf{vc}}
+\newcommand{\vr}{\mathsf{vr}}
+\newcommand{\poly}{\mathsf{poly}}
+\newcommand{\add}{\mathsf{add}}
+\newcommand{\mul}{\mathsf{mul}}
+\newcommand{\view}{\mathsf{View}}
+\newcommand{\bpp}{\mathbf{BPP}}
+
+\begin{document}
+	\maketitle
+	
+	\begin{abstract}
+	\end{abstract}
+	
+	\pagebreak
+	\tableofcontents
+	
+	\pagebreak
+	\input{sections/section-1.tex}
+	
+	\pagebreak
+	\input{sections/section-2.tex}
+	
+	\pagebreak
+	\input{sections/section-3.tex}
+	
+	\pagebreak
+	\input{sections/section-4.tex}
+	
+	\pagebreak
+	\input{sections/section-5.tex}
+	
+	\pagebreak
+	\input{sections/section-6.tex}
+	
+	\pagebreak
+	\input{sections/section-7.tex}
+	
+	\pagebreak
+	\input{sections/section-8.tex}	
+	
+	\pagebreak
+	\appendix
+	
+	\bibliographystyle{alpha}
+	\bibliography{references}
+	
+\end{document}

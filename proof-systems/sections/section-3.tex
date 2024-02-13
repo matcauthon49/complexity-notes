@@ -1,0 +1,137 @@
+\section{$\pspace\subseteq\ip$}
+Using the tools we have developed in the previous section, we are now ready to show the other side of $\ip=\pspace$. Our approach will be nearly identical to our IPs for $\mathsf{UNSAT}$ and $\#\mathsf{SAT}$ \textbf{--} first we identify a $\pspace$-complete problem that deals with boolean formulae, then we arithmetize it, and finally we run a counting IP to decide the arithmetization.
+
+\subsection{Quantized Boolean Formulae}
+
+\begin{definition}[Fully Quantized Boolean Formula]
+	A QBF is a logical expression of the form
+	$$\sim_1x_1, \sim_2x_2,\dots, \sim_nx_n \phi(x_1,x_2,\dots,x_n)$$
+	where $\phi(x_1,\dots,x_n)$ is a CNF, and $\sim_i$ is either $\forall$ or $\exists$ operator.
+\end{definition}
+
+Each QBF evaluates to either true or false. In fact, we can view $\np$, $co\np$ and various other complexity through the lens of QBFs:
+\begin{align*}
+	\np&:=\{\phi\mid\exists x_1,\dots,\exists x_2\phi(x_1,\dots,x_n=1)\}\\
+	co\np&:=\{\phi\mid\forall x_1,\dots,\forall x_2\phi(x_1,\dots,x_n=1)\}
+\end{align*}
+
+We can further recall that $\ph$ is defined by QBFs in which the quantifiers alternate. The fact that $\ph\subseteq\pspace$ can be easily seen once derive the following result.
+
+\begin{definition}[TQBF]
+	$\mathsf{TQBF}$ is the language consisting of 3-CNFs with alternating quantifiers, ie.
+	$$\mathsf{TQBF}=\{\phi(x_1,x_2,\dots,x_n)\mid\forall x_1,\exists x_2,\dots\phi(x_1,x_2,\dots,x_n)=1\}$$
+\end{definition}
+
+\begin{theorem}
+	\label{thm:tqbf}
+	$\mathsf{TQBF}$ is $\pspace$-complete.
+\end{theorem}
+
+We will look at the proof of \ref{thm:tqbf} in a later section.
+
+\subsection{Arithmetization of $\mathsf{TQBF}$}
+Before we can start running an interactive proof over $\mathbf{TQBF}$, we arithmetize it to a polynomial. The inner 3-CNF can simply be arithmetized as the polynomial for $\#\sat$. The transformation for the outer quantifers is more involved, but comes intuitively from the definition.
+\begin{itemize}
+	\item $\forall$ acts as a conjunction, since $\forall x_i \phi=\phi(x_1,\dots,1,\dots,x_n)\wedge\phi(x_1,\dots,0,\dots,x_n)$.
+	\item $\exists$ acts as a disjunction, since $\forall x_i \phi=\phi(x_1,\dots,1,\dots,x_n)\vee\phi(x_1,\dots,0,\dots,x_n)$.
+\end{itemize}
+
+Thus, we can arithmetize the quantifiers as
+\begin{align*}
+	\forall  x_i \phi(x_1,\dots,x_i,\dots,x_n)&\Leftrightarrow p_{\phi}(x_1,\dots,0,\dots,x_n) p_{\phi}(x_1,\dots,1,\dots,x_n)\\
+	\exists  x_i \phi(x_1,\dots,x_i,\dots,x_n)&\Leftrightarrow 1-((1-p_{\phi}(x_1,\dots,0,\dots,x_n)) (1-p_{\phi}(x_1,\dots,1,\dots,x_n)))
+\end{align*}
+
+We assign symbols to these operations, namely $\prod_{x_i}$ and $\coprod_{x_i}$.
+
+There is a slight problem, however. Since we are multiplying polynomials a total of $2^n$ times (each variable has a quantifier) our final polynomial will contain variables of the form $x^{2^n}$, a calculation the verifier cannot do in polynomial time. However, we notice that $\phi(\mathbf{x})=p(\mathbf{x})\leq 1$. If this is the case, then $x_i^k$ can be replaced by $x_i$ in all fields (including $\F_2$). Thus, we have to add an additional degree quantifier, $\Delta$, which performs the \textit{degree reduction} operation\footnote{It should be clear why $\verifier$ cannot multiply polynomials in polynomial amount of time. It is less apparent, however, why the verifier cannot simply do degree reduction by itself by a simple sift through the monomial expansion. The reason is that the monomial expansion is a particularly inefficient representation of polynomials which takes more than polynomial amount of space in the number of variables. Thus the obvious algorithm is not actually a polytime operation. The `correct' representation of polynomials is in the form of an arithmetic circuit, and degree reduction is not a polynomial-time operation under this representation.}.
+
+Our final arithmetization becomes
+$$\forall x_1,\exists x_2,\dots,\phi(\textbf{x})\Leftrightarrow\prod_{x_1}\Delta_{x_1}\coprod_{x_2}\Delta_{x_1}\Delta_{x_2}\dots p_{\phi}(\mathbf{x})$$
+
+\subsection{Shamir's Protocol}
+
+The protocol we now describe was given by Adi Shamir in his original \cite{10.1145/146585.146609} paper. It is a variation of the sumcheck protocol that also allows evaluation of our new quantifier arithmetizations. The protocol is described in \ref{fig:4}. It proceeds for a total of $O(n^2)$ rounds.
+
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{enumerate}
+			\item In the $i^{\text{th}}$ step, $\prover$ sends the polynomial $p_i$ to the verifier, which represents the polynomial in the $i^{\text{th}}$ variable with all the later quantifiers applied and all the previous variables substituted by the verifier's random challenges $w_i$.
+			\begin{enumerate}
+				\item If the quantifier is $\prod/\coprod$, the polynomial is a one-degree polynomial.
+				\item If the quantifier is $\Delta$, the polynomial is a $3m$- or $2$- degree polynomial, the polynomial \textit{before} it became the degree-reduced version of the previous round. In the first $n-1$ variable, this is a $2$ degree polynomial since it is the product of two different $1$-degree polynomials. In the last variable, it is the arithmetization itself, which could have up to a $3m$-degree. 
+			\end{enumerate}
+			\item On receiving this polynomial, the verifier does one of the following:
+			\begin{enumerate}
+				\item If the $i^{\text{th}}$ quantifier is $\prod$, it checks if $p_i(0)p_i(1)=\gamma_{i-1}=p_{i-1}(w_{i-1})$, the evaluation of the previous step.
+				\item If the quantifier is $\coprod$, it checks if $1-(1-p_i(0))(1-p_i(1))=\gamma_{i-1}$.
+				\item If the quantifier is $\Delta$, it checks if $p_i(\mathbf{w}_{i-1})=\gamma_{i-1}$, where $\mathbf{w}_i=(w_1,\dots,w_i)$, since the degree-reduced polynomial should have the same evaluation.
+			\end{enumerate}
+			\item The verifier sends a challenge $w_{i}\leftarrow\F$.
+			\item After $O(n^2)$ rounds, the verifier checks if $p(w_1,\dots,w_n)=\gamma_k$.
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{Shamir's Protocol.}
+	\label{fig:4}
+\end{figure}
+
+\begin{theorem}
+	\label{thm:shamir}
+	Shamir's Protocol is a correct IP for $\mathsf{TQBF}$.
+\end{theorem}
+
+\begin{proof}
+	The full proof can get a bit tedious, but the high-level overview follows from a good understanding of the sumcheck protocol. Completeness is guaranteed from the fact that an honest prover will correctly send the polynomials $p_i$ and finally $p(w_1,\dots,w_n)=\gamma_k$ follows from correctness and definition of the $p_i$.
+	
+	For soundness, we use similar properties as that of sumcheck, but separate our analysis into two cases:
+	
+	\begin{itemize}
+		\item\underline{Case 1}: The round is a $\prod/\coprod$ round. In this case the prover can't send the correct polynomial $p_i$ since the arithmetized polynomial does not evaluate to a nonzero value, and so $p_i(0)p_i(1)\neq\gamma_{i-1}$. Hence it must send an incorrect polynomial $\tilde{p}_i$ which passes the check. The probability that $\tilde{p}$ passes the verifier's check is $\Pr[\tilde{p}_i(w_i)=p_i(w_i)]\leq\frac{1}{\F}$.
+		\item\underline{Case 2}: The round is a $\Delta$ round. In this case the same applies, but the degree of the polynomial is higher, so the error is at most $\frac{3m}{\F}$ or $\frac{2}{\F}$.
+	\end{itemize}
+
+	The total soundness error we get is $\frac{1}{\F}(n+\sum_{i=1}^{n-1}2i+3mn)=\frac{3mn+n^2}{\F}$, and if we take $\F$ large enough, the error can get as small as we like.
+\end{proof}
+
+We have thus shown an IP for $\mathsf{TQBF}$. To complete our proof, we show that $\mathsf{TQBF}$ is $\pspace$-complete.
+
+\subsection{$\pspace$-completeness of $\mathsf{TQBF}$}
+
+We will now provide a proof of \ref{thm:tqbf}.
+
+\begin{proof}
+	First, we see that $\mathsf{TQBF}$ is actually in $\pspace$. To show this, it is enough to notice that evaluating the QBF over all possible inputs along with keeping a polysize tab on whether each quantifier is satisfied is enough. The evaluation of the QBF over all inputs can be easily done in polyspace, since each evaluation can be done in polytime as well.
+	
+	We now show that $\mathsf{TQBF}$ is $\pspace$-hard. Consider a language $L\in\pspace$. We wish to construct in polytime a polysize QBF $\phi$ such that $x\in L\iff\phi\in\mathsf{TQBF}$. We will use a Turing Machine reduction for this.
+	
+	First, consider the \textit{configuration graph} $\mathcal{C}_x$ of the computation for $L$ on $x$, which is the graph with nodes corresponding to valid configurations of the TM that computes $L$ and directed edges between valid $1$-step transitions during the evaluation on $x$. Let $C_s$ be the universal start state and $C_a$ be the universal accept state. It follows that
+	$$x\in L\iff P(C_s, C_a)\in\mathcal{C}_x$$
+	ie, there exists a path between $C_s$ and $C_a$ in $\mathcal{C}_x$. Furthermore, the path length is of less than $2^{O(S(n))}$, since the total number of configurations of that amount. We will recursively define our QBF $\Phi=\Phi_{S(n)}$. We begin by defining
+	$$\Phi_i(C,C')=1\iff\exists P(C, C')\in\mathcal{C}_x, |P|\leq 2^i$$ 
+	First, $\Phi_1$ is simply the Cook-Levin formula corresponding to a 1-step transition between $C$ and $C'$. This is polysize and contains no quantifiers. Recursively we can then define
+	$$\Phi_i(C, C')=\exists C''\Phi_{i-1}(C, C'')\wedge\Phi_{i-1}(C'', C)$$
+	The problem is that this effectively doubles the size of the formula, which we can't afford (as it will take more than polynomial the amount of space). To offset this, we introduce new variables $D_1$ and $D_2$ such that 
+	$$\Phi_i(C, C')=\exists C''\forall D_1, D_2 (D_1=C\wedge D_2=C'')\vee (D_1=C''\wedge D_2=C)\implies \Phi_{i-1}(D_1, D_2)$$
+	It is worth looking at what is actually happening here. The two new variables we have introduced sift over all the vertices and check whether there exists some $C''$ for which this works using just a single evaluation of $\Phi_{i-1}$. Parsed, this means that for whatever $D_1$ and $D_2$ that are taken, if even one of the two possible valuations is satisfied, it will follow that $\Phi_{i-1}(D_1, D_2)$ will be true. The `implies' function can be encoded as a formula with just a polynomial overhead. Thus there is only a polynomial size jump at each step, and we have
+	$$\Phi_i=\Phi_{i-1}+\mathsf{poly}(S(n)$$
+	It follows that $\Phi_{S(n)}$ is polysize. Thus, $\mathsf{TQBF}$ is $\pspace$-complete.
+\end{proof}
+
+Theorems \ref{thm:tqbf} and \ref{thm:shamir} together imply that $\pspace\subseteq\ip$. The other direction was previously shown. It follows that the class of languages decidable by $\ip$ is exactly equal to the class decidable by $\pspace$, which, according to conventional belief, gives a considerable amount of power over base $\np$.
+
+\begin{theorem}
+	\label{thm:ip=pspace}
+	$\ip=\pspace$.
+\end{theorem}
+\begin{proof}
+	Follows from \ref{thm:ipsubsetpspace}, \ref{thm:tqbf} and \ref{thm:shamir}.
+\end{proof}

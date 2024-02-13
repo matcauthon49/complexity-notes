@@ -1,0 +1,179 @@
+\section{Zero-Knowledge Proof Systems}
+
+Until now we have studied the benefits of interaction and randomness in proof systems, and seen how $\ip$ can capture several classes beyond $\np$ such as $\p^{\#\p}$, $co\np$ and $\pspace$. We have also seen how IPs can help in delegating classes of computation such as $\mathbf{NC}$. We will now turn our attention to an additional property conferred to interactive proofs, one of high cryptographic importance: zero-knowledge, introduced by Goldwasser, Micali and Rackoff in the same paper that they introduced IP \cite{10.1145/22145.22178}.
+
+Informally, zero-knowledge is a property that protects the privacy of the prover -- in particular, zero-knowledge IPs do not `give away' \textit{why} a statement is true. To begin understanding how and why zero-knowledge works, we will consider a first example of a zero-knowledge IP.
+
+\subsection{Zero-Knowledge IP for Graph Isomorphism}
+
+The problem of graph isomorphism, $\mathsf{GI}$, is in $\np$ since for any instance $\{G_0, G_1\}$, a polysize proof consisting only of the permutation $\varphi$ such that $\varphi(G_0)=G_1$ is enough. However, this proof does not have the property of being zero-knowledge since the verifier gains additional information apart from simply the bit indicating whether the instance is true or not -- it also gains the permutation. 
+
+The challenge is to define an IP that correctly verifies $\mathsf{GI}$ while also maintaining the prover's privacy, ie. the permutation remains a secret. We consider the following protocol, in which we assume that if $G_0\cong G_1$, then $\prover$ possesses the witness $\sigma$.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{enumerate}
+			\item $\prover$ determines the permutation $\sigma$ such that $\sigma(G_1)=G_0$. After this, it samples a random permutation $\phi:[n]\rightarrow[n]$, determines $H=\phi(G_0)$ and sends $H$ to $\verifier$.
+			\item On receiving $H$, $\verifier$ samples a bit $b\leftarrow\{0,1\}$ and sends it to $\prover$.
+			\item $\prover$ calculates $\psi=\phi\circ\sigma^{b}$ and sends $\psi$ to $\verifier$.
+			\item $\verifier$ checks if $\psi(G_b)=H$. If yes, it accepts, otherwise it rejects.
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{Zero-Knowledge Protocol for $\mathsf{GI}$.}
+	\label{fig:zkgi}
+\end{figure}
+
+\begin{theorem}
+	The IP in \ref{fig:zkgi} is a correct IP for $\mathsf{GI}$.
+\end{theorem}
+\begin{proof}
+	As usual, we argue both correctness and soundness.
+	\begin{itemize}
+		\item\underline{Correctness}: If $G_0\cong G_1$, then whatever bit $\verifier$ sends, it follows that $\psi(G_b)=\phi(\sigma^b(G_b))=\phi(G_0)=H$. Thus, an honest prover can always convince the verifier, regardless of the verifier's challenge.
+		\item\underline{Soundness}: If $G_0\not\cong G_1$, then with $1/2$ probability the verifier rejects, since it can only be isomorphic either to $G_0$ or $G_1$.
+	\end{itemize}
+\end{proof}
+
+It should be clear why the proof is zero-knowledge and why $\verifier$ does not learn any information about the permutation -- the intuitive reason is that the permutation is composed with a randomly picked $\phi$, which `shields' the true witness. However, one can argue that $\verifier$ does learn some information about the graph $H$. Thus before we provide a full proof of zero-knowledge, we will formalize the concept through some definitions.
+
+\subsection{Honest Verifier Zero-Knowledge}
+
+\begin{definition}[Honest-Verifier Zero-Knowledge]
+	An interactive proof $(\prover,\verifier)$ is said to be honest-verifier zero-knowlege if there exists a probabilistic polynomial time simulator $\simulator$ such that
+	$$\forall x\in L, \simulator(x)\equiv\view_v\left(\left\langle\prover,\verifier\right\rangle(x)\right)$$
+	where $\view_v\left(\left\langle\prover,\verifier\right\rangle(x)\right):=(r,x,a_1,\dots,a_n)$ is all the information seen by the verifier during the protocol, including its randomness, the problem instance, and all the prover messages.
+\end{definition}
+
+Since there is an element of randomness involved here, we claim that the distributions of the simulator outputs and the actual protocol views are equal. The interpretation is that the honest verifier could have simulated the entire transcript without any interaction from the honest prover at all, and thus could not have gained any information during the protocol execution which it would not have otherwise gained.
+
+Note the importance of \textit{honesty} in this definition. We only deal with honest provers since malicious provers have no incentive to safeguard their own privacy, and can thus simply send the witness with no consequence, making the definition meaningless. Furthermore, the definition also does not protect against a malicious verifier -- if the verifier deviates from the protocol (in a covert way, of course, such as sending pre-chosen, non-random bits to the prover) then it can still potentially gain some knowledge.
+
+Thus, HVZK is a joint property of the honest prover and honest verifier. We define the complexity class $\hvzk$ to be the class of all languages such that there exists an HVZK IP that decides them.
+
+\subsubsection{HVZK for the $\mathsf{GI}$ Protocol}
+
+\begin{theorem}
+	The IP in \ref{fig:zkgi} is HVZK.
+	\label{thm:gihvzk}
+\end{theorem}
+\begin{proof}
+	We construct a simulator which outputs $\view_v\left(\left\langle\prover,\verifier\right\rangle(x)\right)$ given no extra information other than $x\in L$. Let $\simulator$ proceed as follows:
+	\begin{enumerate}
+		\item First, $\simulator$ samples a bit $b\leftarrow\{0,1\}.$
+		\item It samples a permutation $\psi:[n]\rightarrow[n]$.
+		\item It determines a permuted graph $H=\psi(G_b)$.
+		\item It outputs the tuple $(G_0, G_1, H, b,\psi)$.
+	\end{enumerate} 
+	This is precisely the verifier's view, which consists of $(G_0, G_1, H, b, \psi)$ with $b$ random, $\psi$ random (since $\phi$ is random) and $\psi$ such that $\psi(H)=G_0$ or $G_1$ with $1/2$ probability. The two distributions are equal, since the probability that any given element is picked either in the honest protocol execution or by the simulator is the same.
+\end{proof}
+
+\subsection{Malicious Verifier Zero-Knowledge}
+
+\begin{definition}[(Malicious Verifier/Perfect) Zero-Knowledge]
+	An interactive proof $(\prover,\verifier)$ is said to be (malicious-verifier/perfect) zero-knowlege if there exists a probabilistic polynomial time (in expectation) simulator $\simulator$ such that
+	$$\forall x\in L, \forall\, ppt\,\tilde{\verifier}, \hspace{2mm} \simulator(\tilde{\verifier}, x)\equiv\view_v\left(\left\langle\prover,\tilde{\verifier}\right\rangle(x)\right).$$
+\end{definition}
+
+The idea is that regardless of the strategy that the verifier uses, it cannot gain any information besides the problem statement and any internal information it already possesses. The simulator is given access to the verifier to produce a convincing transcript, so that it understands the ways in which the verifier might deviate from the protocol and generate an equal distribution regardless.
+
+The complexity class of problems with Malicious Verifier Zero-Knowledge proof systems is called $\pzk$ or simply $\zk$. We can immediately see two lemmas:
+
+\begin{lemma}
+	$\pzk\subseteq\hvzk\subseteq\ip$.
+\end{lemma}
+\begin{lemma}
+	$\mathbf{BPP}\subseteq\pzk$.
+\end{lemma}
+
+The latter follows from the fact that the prover doesn't need to send anything at all, and the verifier can just find whatever it wants out by itself.
+
+\subsubsection{ZK for the $\mathsf{GI}$ Protocol}
+
+\begin{theorem}
+	The IP in \ref{fig:zkgi} is in $\zk$.
+\end{theorem}
+
+\begin{proof}
+	We use the same idea in the proof for HVZK. Our simulator is constructed as follows:
+	\begin{enumerate}
+		\item $\simulator$ samples the bit $b\rightarrow\{0,1\}$.
+		\item It samples a permutation $\psi:[n]\rightarrow[n]$.
+		\item It determines the permuted graph $H=\psi(G_b)$.
+		\item $\simulator$ queries the verifier for its random bit $\tilde{b}$.
+		\item If $\tilde{b}=b$, then proceed. Else revert to step $1$.
+		\item Output the tuple $(G_0, G_1, H, b, \psi)$.
+	\end{enumerate}
+	Since $G_0\cong G_1$, $H$ is independent of $b$, and furthermore $b$ is independent of $\tilde{b}$. We thus have that $\Pr[b=\tilde{b}]=1/2$, and it follows that the expected number of trials before $b=\tilde{b}$ is $2$. Thus the simulator runs in probabilistic polynomial time.
+	
+	It is clear the simulator is correct, since it only ouptuts the actual view of $\tilde{\verifier}$ (it can ensure this by querying $\tilde{\verifier}$ every time). Furthermore, the distribution of $H$ and $\psi$ is random, and the distribution of $b$ is exactly the distribution of the $b$ in the protocol, since 
+	$$\Pr\left[b=0\mid b=\tilde{b}\right]=\frac{\Pr\left[b=0\right]\Pr\left[b=\tilde{b}\right]}{\Pr\left[b=\tilde{b}\right]}=\Pr\left[b=0\right].$$
+\end{proof}
+
+\subsection{Limitations of Zero-Knowledge}
+
+\begin{theorem}[\cite{10.1145/28395.28418}]
+	$\hvzk$=$\am\cap co\am$.
+\end{theorem}
+
+The previous theorem gives a somewhat unfortunate characterization of zero-knowledge proofs: the class of languages containing even an honest-verifier ZK proof is small enough that even $\np$ is unlikely to be a subset. Furthermore this limitation holds even if we allow the simulator to be statistically indistinguishable from the view of the honest verifier. 
+
+However, we are still interested in finding zero knowledge proofs for problems in $\np$ and beyond. To do this, we will look at ways we can bypass these limitations.
+
+\subsubsection{Relaxing Indistinguishability}
+
+The first technique that we can employ to extend the class of zero-knowledge proofs is to consider proofs in which the simulator and the view are \textit{computationally} indistinguishable in contrast to statistically indistinguishable. We can thus define the classes $\czk$ and $\mathbf{HV}\czk$, representing computational zero-knowledge and honest-verifier computational zero knowledge, respectively.
+
+\begin{definition}[Computational Indistinguishability]
+	Let $\{X_n\}_n$ and $\{Y_n\}_n$ be a sequence of distribitions, where $X_n$ and $Y_n$ are distributions over $\{0,1\}^{\ell(n)}$ for some polynomial $\ell(n)$. We say that $\{X_n\}_n$ and $\{Y_n\}_n$ are computationally indistinguishable if for all non-uniform PPT deciders $\decision$, there exists a negligible function $\epsilon$ such that
+	$$\left|\Pr[t\leftarrow X_n:\decision(t)=1] - \Pr[t\leftarrow Y_n:\decision(t)=1]\right|\leq\epsilon(n).$$
+\end{definition}
+
+It turns out that relaxing our definition to computational indistinguishability gives us a great deal more benefit over equality or statistical closeness.
+
+\begin{theorem}[\cite{10.5555/646752.704748}]
+	$\czk = \ip$.
+\end{theorem}
+
+\subsubsection{Changing the Model}
+
+We can gain additional power by relaxing the model of computation we are working in. For instance, consider the class of interactive proofs $\mathbf{MIP}$, where the verifier is allowed to interact with multiple provers. The following result characterizes ZK in multiprover interctive proofs:
+
+\begin{theorem}
+	$\pzk\mathbf{MIP}=\mathbf{MIP}.$
+\end{theorem}
+
+The theorem reduces the use of cryptography to a physical condition, simply ensuring that the provers can't communicate.
+
+\subsection{$\hvzk$ to $\ip$}
+
+We now consider the following lemma.
+
+\begin{lemma}
+	If $L\in\hvzk[k]$, then $\overline{L}\in\ip[O(k)]$.
+\end{lemma}
+
+We can thus use zero-knowledge proofs to find interactive proofs for the corresponding complement language. We will see this technique applied to the case of $\mathsf{GI}$, using which we will obtain another IP for $\mathsf{GI}$.
+
+\begin{proof}
+	We heavily use the properties of the simulator $\simulator$. It is clear that in the case of $x\in L$, we have that $\simulator$ outputs a distribution that is equal to the distribition $\view_v\left(\left\langle\prover, \verifier\right\rangle(x)\right)$. If, however, $x\notin L$, then $\simulator$ must output something: in particular, it can output any of the following three.
+	\begin{itemize}
+		\item Complete gibberish.
+		\item A non-accepting view.
+		\item An accepting view.
+	\end{itemize}
+	We notice that it is possible to run the simulator and check whether $x\in L$ if the outputs are the first two possibilites. Thus for $L\notin\bpp$, it is likely that the output will be the third possibility. However, in that case the distributions of the view and that of the simulator will be unequal, and it is possible to exploit this to gain an IP for $\overline{L}$. In particular, the IP picks random instances of $\simulator$'s output and sends it to $\prover$, asking it to prove that the sample is not from the actual distribution of views.
+\end{proof}
+
+\subsubsection{An IP for $\mathsf{GNI}$ using $\mathsf{GI}\in\hvzk$}
+
+We recall the simulator for $\mathsf{GI}$ from Theorem~\ref{thm:gihvzk}. The verifier runs this simulator to obtain a random bit $b$, a random permutation $\psi$, and a graph $H$. It then sends $H$ to $\prover$ and asks for a bit $\tilde{b}$ such that $H=\psi(G_{\tilde{b}})$. If $b=\tilde{b}$ we accept, otherwise we reject. 
+
+The proof of correctness and soundness are trivial. However, notice that if an instance was not in $\mathsf{GNI}$, then $\simulator$ is indeed equal to the view and $\prover$ could only choose the correct $\tilde{b}$ with half probability, exactly the same as the original choice.

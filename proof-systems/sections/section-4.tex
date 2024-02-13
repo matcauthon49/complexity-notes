@@ -1,0 +1,120 @@
+\section{Public-Coin Interactive Protocols}
+
+In the IP for $\mathsf{GNI}$, we saw that a crucial component of correctness was the fact that $\prover$ did not have access to the private randomness of $\verifier$. This was in contrast to sumcheck, in which all randomness of the verifier was communicated to $\prover$. We now turn the question of encoding these different kinds of ramdomness, and see what can be said about the complexity classes in which they belong.
+
+\subsection{$\am$ and $\ma$}
+
+\begin{definition}[Public-Coin Verifier]
+	A verifier $\verifier$ is public-coin iff every message communicated by $\verifier$ is a freshly sampled random string, otherwise it is private-coin.
+\end{definition}
+
+\begin{definition}[$\am$ and $\ma$]
+	The complexity classes $\am[k]$ and $\ma[k]$ are languages decidable by a public-coin verifier through a $k$-round IP in which the verifier and prover send the first message, respectively.
+\end{definition}
+
+$\am$ and $\ma$ were introduced by László Babai \cite{10.1145/22145.22192} in 1985, around the time interactive proofs were introduced. The names $\am$ and $\ma$ stand for Arthur-Merlin and Merlin-Arthur respectively, with Merlin corresponding to the prover and Arthur to the verifier. It is interesting to note that $\ma[1]$ is the probabilistic analog of $\np$, and thus the question of $\ma[1]=\np$ is closely tied to derandomization, with the equality holding if PRGs exist. Conventionally, $\am$ and $\ma$ are used to refer to $\am[2]$ and $\ma[1]$, respectively. The following lemma is trivial:
+
+\begin{lemma}
+	\label{lem:ammainip}
+	$\forall k\in\mathbb{N}, \am[k]$ and $\ma[k]\subseteq\ip[k]$.
+\end{lemma}
+
+\vspace{4mm}
+
+In 1986, Shafi Goldwasser and Michael Sipser \cite{10.1145/12130.12137} showed that private coin protocols can be simulated by public coin protocols with an extra round of communication.
+
+\begin{theorem}
+	$\ip[k]\subseteq\am[k+1]$.
+\end{theorem}
+
+Note that this does not imply that $\ip\subseteq\bigcup_{i=1}^{\infty}\am[i]$, since $\ip$ also contains protocols where the number of rounds is not constant, ie. polynomial in the length of the input. However, if $\am$ is extended to support polynomial size public-coin proofs, then $\ip\subseteq\am[\mathsf{poly}]$. We will not prove the above theorem, but we will look at a weaker case.
+
+\begin{theorem}
+	$\mathsf{GNI}\in\am[1]$.
+\end{theorem}
+
+In other words, we will show that there is a public-coin IP for $\mathsf{GNI}$ which involves only one round of communication between the prover and the verifier ($\am[1]$ is one-\textit{round}, so that means that $\verifier$ sends a message and $\prover$ responds).
+
+\subsection{The Set Lower Bound Protocol}
+
+To find a public-coin protocol for $\mathsf{GNI}$ we will have to find a way to look at $\mathsf{GNI}$ quantitatively. Once we have accomplished this, we will run the set lower-bound protocol that differentiates between sets of different sizes with high probability, assuming that there is an efficient technique to verify membership in the set. Before we look at the application of set lower-bound to $\mathsf{GNI}$ we will study the protocol in its full generality.
+
+\begin{definition}
+	Let $S\in\{0,1\}^m$ be a set such that membership is verifiable in polynomial time. The Set Lower Bound Protocol is an IP for the promise problem ``$1$ if $|S|>B$, $0$ if $|S|\leq\frac{B}{2}$."
+\end{definition}
+
+The protocol is illustrated in \ref{fig:5}.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{enumerate}
+			\item $\verifier$ sets $\ell$ such that $2^{\ell-2}\leq B\leq 2^{\ell-1}$. It samples $h\leftarrow\mathcal{H}$ and $y\leftarrow\{0,1\}^\ell$ and sends them to $\prover$.
+			\item $\prover$ determines an $x$ such that $h(x)=y$ and $x\in S$. It then sends $(x,\pi)$ to the verifier where $\pi$ is a proof certifying membership of $x$ in $S$.
+			\item If $\pi$ is a valid proof and $h(x)=y$, $\verifier$ accepts. Otherwise it rejects. 
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{The Set Lower Bound Protocol.}
+	\label{fig:5}
+\end{figure}
+
+
+\begin{definition}[Pairwise-independent Hash Functions]
+	A family $\mathcal{H}_{m,\ell}=\{h:\{0,1\}^m\rightarrow\{0,1\}^\ell\}$ is pairwise independent if, for all distinct $x,x'$ and for all (not necessarily distinct) $y,y'$ we have
+	$$\Pr_{h\in\mathcal{H}_{m,\ell}}[h(x)=y\wedge h(x')=y']\leq\frac{1}{2^{2\ell}}$$
+\end{definition}
+
+We can construct a pairwise-independent hash function family from a set of random affine functions, where $\mathcal{H}_{m,m}=\{h_{a,b}(x)=ax+b\}_{a,b\in\F_{2^m}}$. We have
+\begin{align*}
+	 &\Pr_{h\in\mathcal{H}_{m,\ell}}[h(x)=y\wedge h(x')=y']\\	=&\Pr_{h\in\mathcal{H}_{m,m}}[ax+b=y\wedge ax'+b=y']\\
+	=&\frac{1}{2^m}\times\frac{1}{2^m}\\
+	=&\frac{1}{2^{2m}}
+\end{align*}
+
+We can reduce the size of the domain by considering $\mathcal{H}_{m,\ell}=\{h_{a,b}(x)=ax+b\pmod{2^\ell}\}_{a,b\in\F_{2^m}}$. This does not affect pairwise independence.
+
+\vspace{4mm}
+
+\begin{theorem}
+	The protocol of \ref{fig:5} is a correct IP for set lower bound.
+\end{theorem}
+\begin{proof}
+	Both soundness and completeness can be verified using simple probability. 
+	\begin{itemize}
+		\item\underline{Soundness}: Let $|S|\leq\frac{B}{2}$. Then $$\Pr[\exists x\in S\mid h(x)=y]\leq\sum_{x\in S}\Pr[h(x)=y]\leq\frac{1}{2^{\ell}}\times\frac{B}{2}=\frac{B}{2^{\ell+1}}.$$
+		\item\underline{Completeness}: Let $|S|>B$. We fix $y$ and take randomness only over $x$. Using the inclusion-exclusion principle, we get
+		\begin{align*}
+		\Pr[\exists x\in S\mid h(x)=y]&\geq \sum_{x\in S}\Pr[h(x)=y]-\sum_{x_0,x_1\in S}\Pr[h(x_i)=y]\\&\geq\frac{B}{2^{\ell}}-\frac{B}{2^{2\ell}}\\&\geq \frac{3B}{4\cdot 2^\ell}.
+		\end{align*}
+	\end{itemize}
+\end{proof}
+
+Note that the analysis of this protocol did not have \textit{perfect completness}, ie. there was a completeness error. We can use standard methods in order to reduce this error. In particular, if we repeat the protocol a large number of times, then the number of successes will tend to the fraction of correct executions (assuming that $|S|\geq B$). The probability that even when $|S|\geq B$, the executions turn out to be low enough that we can be convinced of $|S|\leq\frac{B}{2}$ can be found by the Chernoff bound since the output of each trial is an independent binary random variable. This turns out to be very small even for a low number of repititions.
+
+However, we can obtain a completeness error of $0$ simply by adding another round of interaction. We will see how to do this in the next section.
+
+\subsubsection{A Public-Coin Protocol for $\mathsf{GNI}$}
+
+Our public-coin protocol for $\mathsf{GNI}$ will make heavy use of the machinery given to us by the set lower bound protocol. Consider this: if $G_1\cong G_2$, then the total number of graphs which are isomorphic to either $G_1$ or $G_2$ is $|V_1|!$, since there is an isomorphic graph for each permuation. In the case where $G_1\not\cong G_2$, the total number of graphs is $2\cdot |V_1|!$. This gives us the opportunity to use the set lower bound protocol on the set
+$$S=\{H\in\{0,1\}^{n^2}\mid H\cong G_1 \vee H\cong G_2\}.$$
+
+Checking membership in $S$ is a matter of determining whether $H\cong G_1$ or $H\cong G_2$, which is an instance of graph isomorphism. But graph isomorphism is in $\np$, since a polysize certificate for it is simply the permutation corresponding to the node labels of $G_1$. Thus we can efficiently check membership in $S$.
+
+We are done! Running the set lower bound protocol on this set with $B=2\cdot|V_1|!$ is a correct public-coin protocol for $\mathsf{GNI}$.
+
+\subsection{Perfect Completeness}
+
+The set lower bound protocol of \ref{fig:5} is a correct protocol for the problem, but it does not strictly satisfy the definition of an IP which we have laid out in section $1$. This is because there is some amount of completeness error. Fortunately, this error can be mitigated simply by adding a single extra round to the protocol.
+
+\begin{theorem}
+	If $L$ has a $k$-round interactive proof then it has a $k+1$-round interactive proof with perfect completeness.
+\end{theorem}
+
+The proof of this theorem is highly involved and has been omitted. The basic idea is that from the Sipser-G\'acs-Lautemann \cite{LAUTEMANN1983215} proof that $\mathbf{BPP}\subseteq\Sigma_2^P$. We use the probabilistic method to find a set of strings $s_i$ such that $s_i\oplus r$ for any randomness $r$, when used as randomness, outputs $1$ if $x\in L$, and outputs $0$ if $x\notin L$. This procedure is carried out over $k$ rounds with the set of $s_i$ being sent to the verifier in the first round.
