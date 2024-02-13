@@ -1,1 +1,37 @@
 \paragraph{Question 5.1} Show that the language $\Sigma_i\mathsf{SAT}$ of (5.2) is complete for $\Sigma_i^p$ under polynomial-time reductions.
+
+\paragraph{Answer.} The proof follows ideas closely related to the Cook-Levin Theorem.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 5.2}
+\label{Q5.2}
+Prove claim 5.9: for every $i\in\mathbb{N}$, $\Sigma_i^p=\cup_c\Sigma_i\mathbf{TIME}(n^c)$ and $\pip{i}=\cup_c\Pi_i\mathbf{TIME}(n^c)$.
+
+\paragraph{Answer.} We will illustrate the proof for $\sigp{i}$; it is nearly identical for $\pip{i}$. Recall that a language $L$ is in $\sigp{i}$ if there exists a polynomial time TM $M$ and some polynomial $q$ such that 
+$$x\in L\iff \exists u_1\in\{0,1\}^{q(|x|)}\dots Q_iu_i\in \{0,1\}^{q(|x|)} M(x,u_1,\dots,u_i)=1$$
+where $Q_i$ denotes $\forall$ or $\exists$ depending on whether $i$ is even or odd. We will first show that $\sigp{i}\subseteq\cup_c\Sigma_i\mathbf{TIME}(n^c)$.
+
+Suppose that there is some language $L\in\sigp{i}$. Then it has some TM $M_L$ associated with it as in the previous definition. Then the alternating TM which nondeterministically guesses each string $u_j$ and accepts if $M_L$ accepts is a machine that decides $L$ if it works as follows: first, it nondeterministically writes out a string of length $q(|x|)$, and then it switches state labels $i$ times as it writes out strings of length $q(|x|)$. It follows that the start state is an accepting state iff $M$ acccepts $Q_ju_j$ for each $j$. Since the total runtime of this machine is polynomial, we can conclude that $\sigp{i}=\cup_c\Sigma_i\mathbf{TIME}(n^c)$.
+
+For the reverse containment, it is enough to notice that each bit corresponding to the transition choice that the alternating TM made to reach an accept state serves as a polynomially checkable witness. The precise details are straightforward.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 5.3} Show that if $\mathsf{3SAT}$ is polynomial-time reducible to $\overline{\mathsf{3SAT}}$, then $\mathbf{PH}=\np$.
+
+\paragraph{Answer.} $\overline{\mathsf{3SAT}}$ is $co\np$ complete, so the assertion would imply that $\np=co\np$. It immediately follows that the polynomial hierarchy collapses to the first level.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 5.5} Prove theorem 5.10: $\mathbf{AP}=\mathbf{PSPACE}$.
+
+\paragraph{Answer.} First we show that $\mathbf{PSPACE}\subseteq\mathbf{AP}$. Consider any $\mathsf{TQBF}$ formula. Using the transformation covered in Question 5.2, we can design a polynomial-time ATM which can solve the $\mathsf{TQBF}$ instance. It immediately follows that $\mathsf{TQBF}\in\mathbf{AP}$, and since $\mathsf{TQBF}$ is $\mathbf{PSPACE}$-complete, we are done.
+
+Next we show that $\mathbf{AP}\subseteq\mathbf{PSPACE}$. Consider any language $L$ accepted by $\mathbf{AP}$. This means that there is some polynomial-time ATM which decides the language; let this machine be $M$. We now work on the configuration graph of $(M,x)$. 
