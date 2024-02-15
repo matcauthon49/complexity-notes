@@ -1,0 +1,20 @@
+\paragraph{In-text.} Prove:
+\begin{align}
+	&\sum_{x\in Y} d(x)=\sum_{A\in\mathcal{F}}|Y\cap A| \text{ for any } Y\subseteq X.\\
+	&\sum_{x\in X}d(x)^2=\sum_{x\in\mathcal{F}}\sum_{x\in A}d(x)=\sum_{A\in\mathcal{F}}\sum_{B\in\mathcal{F}}|A\cap B|.
+\end{align}
+
+\paragraph{Answer.} We can proceed by a counting argument. For the first part, consider the incidence matrix $M=(m_{x,a})$ of $\mathcal{F}$. Adding the rows belonging to the elements of $x\in Y$ gives us the left hand side. If we `slice' the matrix in this way, however (removing all the rows belonging to elements $x\notin Y$) then summing via the columns we get the sum of only those elements which are both in $A$ and in $Y$, ie. $|A\cap Y|$.
+
+For the second part, it is enough to notice that if we replace each entry $1$ in the incidence matrix with $d(x)$, then adding along the rows gives $\sum_{x\in X}d(x)^2$ while adding along the columns gives the term in the central equality (we add $d(x)$ for every $x\in A$, and then we sum over each of the $A$s). The final equality follows from noticing that
+\begin{align*}
+	\sum_{x\in\mathcal{F}}\sum_{x\in A}d(x)&=\sum_{A'\in\mathcal{F}}\left(\sum_{x\in A}|A\cap A'|\right)\\
+	&=\sum_{A\in\mathcal{F}}\sum_{B\in\mathcal{F}}|A\cap B|.
+\end{align*}
+where the second equality follows from substituting the first part.
+
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+

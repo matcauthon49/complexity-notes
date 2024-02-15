@@ -1,0 +1,50 @@
+\paragraph{Question 4.3} Prove that every language $L$ that is not the empty set or $\{0,1\}^{*}$ is complete for $\mathbf{NL}$ under polynomial-time Karp reductions.
+
+\paragraph{Answer.} Consider any language $L$ in $\mathbf{NL}$. Since $\mathbf{NL}\subseteq\p$, we know that membership for $L$ can be determined in polynomial-time. Pick any nontrivial language $L'$, and say that $y\in L'$ while $z\notin L'$.Then the following is a polynomial-time reduction from $L$ to $L'$:
+$$f(x)=
+\begin{cases}
+	y&\text{ iff $x\in L$}\\
+	z&\text{ iff $x\notin L$}
+\end{cases}.$$
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 4.4} Show that the following language is $\mathbf{NL}$-complete:
+$$\mathsf{SCD}=\{G:G\text{ is a strongly connected digraph}\}.$$
+
+\paragraph{Answer.} Consider any instance of $\mathsf{PATH}$, say $\left\langle G, s, t\right\rangle$. Then the following is a log-space reduction from $\mathsf{PATH}$ to $\mathsf{SCD}$. For each vertex $v\neq s,t$, add an edge $v\rightarrow s$ and an edge $t\rightarrow v$. Clearly this changes nothing about the connectivity of $s$ and $t$ since all the edges are into $s$ while they are out of $t$. However, if $t$ is reachable from $s$, then a path from every vertex $v$ to $w$ is $v\rightarrow s\leadsto t\rightarrow w$. The reduction is log-space since the calculation of each bit of the adjacency matrix is unaffected apart from a single check.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 4.5} Show that $\mathsf{2SAT}$ is in $\mathbf{NL}$.
+
+\paragraph{Answer.} We will reduce $\mathsf{2SAT}$ to a $\mathsf{PATH}$ problem. Define here the \textit{implication graph} of a $\mathsf{2SAT}$ instance, which is defined by the formula
+$$(x_1\vee x_2)=1\iff (\bar{x}_1\implies x_2)\wedge(\bar{x}_2\implies x_1)$$
+For each such clause we draw the implication graph as the graph consisting of a vertex for each literal and edges from a literal $x_1$ to $x_2$ iff $x_1\implies x_2$. Note that a $\mathsf{2SAT}$ instance is solvable if 
+$x\centernot\implies \bar{x}$ for each $x$. However, this reduces $\mathsf{2SAT}$ to polynomially many instances of $\mathsf{PATH}$, which is in $\mathbf{NL}$.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 4.10} Show that every finite two-person game with perfect information (by finite we mean that there is an a priori upper bound $n$ on the number of moves after which the game is over and one of the players is declared the victor\textbf{--}there are no draws) one of the two players has a winning strategy.
+
+\paragraph{Answer.} The problem essentially just involves reducing the definition of a two-player game to a $\mathsf{TQBF}$ instance. Once this is done, we note that $\pspace$ is closed under complementation, so the complement of a $\mathsf{TQBF}$ instance is also in $\pspace$. It follows that every game has a winning strategy for one of the two players.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 4.12} Define $\mathbf{polyL}$ to be $\cup_{c>0}\mathbf{SPACE}(\log^c n)$. Steve's class $\mathbf{SC}$ (named in honor of Steve Cook) is defined to be the set of languages that can be decided by deterministic machines that run in polynomial time and $\log^c n$ space for some $c>0$.
+
+It is an open problem whether $\mathsf{PATH}\in\mathbf{SC}$. Why does Savitch's Theorem not resolve this question?
+
+Is $\mathbf{SC}$ the same as $\mathbf{polyL}\cap\p$?
+
+\paragraph{Answer.} The key idea here is that a machine that works in $\log^c n$ space for any $c>1$ need not necessarily work in polynomial time as well. All Savitch's theorem says is that
+$$\mathbf{NSPACE}(n)\subseteq\mathbf{DSPACE}(n^2)\subseteq\mathbf{DTIME}(2^{n^2})$$
+Taking $n=\log n$, we get that $\mathbf{NSPACE}(\log n)\subseteq\mathbf{DTIME}(n^{\log n})$. In particular, this does not necessarily mean that the $\mathbf{DSPACE}(\log^2 n)$ algorithm work in polynomial time as well. For the same reason, one side of the containment is easy: $\mathbf{SC}\subseteq\mathbf{polyL}\cap\p$, however the other side may not be true since a language determined by both polynomial-time and polynomial-space machines need not be determinable by a machine that runs simultaneously in polytime and polyspace.

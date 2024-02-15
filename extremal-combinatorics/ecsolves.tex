@@ -1,0 +1,137 @@
+% Title:
+% 	REPORT
+% ----------------------
+% Description:
+%   A non-academic looking report.
+%
+% Creator: Tommy O.
+
+% -------------------------------------------------------------------------
+% Package imports
+% -------------------------------------------------------------------------
+\documentclass[12pt, a4paper, twoside]{article}% 'twocolumn' 
+\usepackage[utf8]{inputenc}% Allow input to be UTF-8
+\usepackage{babel}% Alternative: 'norsk'
+\usepackage{graphicx}% For importing graphics
+\usepackage{amsthm, amsfonts, amssymb}% All the AMS packages
+\usepackage{mathtools}% Fixes a few AMS bugs
+\usepackage[expansion=false]{microtype}% Fixes to make typography better
+\usepackage{hyperref}% For \href{URL}{text}
+\usepackage{fancyhdr}% For fancy headers
+\usepackage[sharp]{easylist}% Easy nested lists
+\usepackage{parskip}% Web-like paragraphs
+\usepackage{multicol}% For multiple columns
+\usepackage[linesnumbered,ruled]{algorithm2e}% For algorithms
+\usepackage{tikz-cd}% For diagrams
+\usepackage{listings}% To include source-code
+\usepackage{booktabs}% Professional tables
+%\usepackage{txfonts}% Font which looks less 'academic'
+%\usepackage[sc]{mathpazo}% A nice font, alternative to CM
+%\usepackage[headings]{fullpage}% Make margins smaller
+\usepackage[a4paper, margin = 3.175cm, includehead, includefoot]{geometry}% May be used to set margins
+\usepackage{centernot}
+
+
+\usepackage{blindtext}% For dummy text
+% -------------------------------------------------------------------------
+% Package setup
+% -------------------------------------------------------------------------
+
+% Setup for the fancyhdr package
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\rhead[]{\nouppercase{\leftmark}}
+\lhead[\nouppercase{\leftmark}]{}
+\chead[]{}
+\rfoot[]{\mytitle \hspace{1em} \thepage}
+\lfoot[\thepage \hspace{1em} \mytitle]{}
+\cfoot[]{}
+
+% Section numbers in equations
+\numberwithin{equation}{section} 
+
+% -------------------------------------------------------------------------
+% Misc settings
+% -------------------------------------------------------------------------
+
+% Spacing between easylist items
+\newcommand{\listSpace}{-0.25em}
+
+% If 'twocolumn', set the spacing as such
+\setlength{\columnsep}{1cm}
+
+\newcommand{\np}{\mathbf{NP}}
+\newcommand{\p}{\mathbf{P}}
+\newcommand{\ip}{\mathbf{IP}}
+\newcommand{\pspace}{\mathbf{PSPACE}}
+\newcommand{\am}{\mathbf{AM}}
+\newcommand{\ma}{\mathbf{MA}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\rel}{\mathcal{R}}
+\newcommand{\lang}{\mathcal{L}}
+\newcommand{\query}{\mathcal{Q}}
+\newcommand{\prover}{\mathcal{P}}
+\newcommand{\verifier}{\mathcal{V}}
+\newcommand{\decision}{\mathcal{D}}
+\newcommand{\simulator}{\mathcal{S}}
+\newcommand{\sat}{\mathsf{SAT}}
+\newcommand{\nc}{\mathbf{NC}}
+\newcommand{\hvzk}{\mathbf{HVZK}}
+\newcommand{\zk}{\mathbf{ZK}}
+\newcommand{\pzk}{\mathbf{PZK}}
+\newcommand{\czk}{\mathbf{CZK}}
+\newcommand{\szk}{\mathbf{SZK}}
+\newcommand{\pc}{\mathsf{pc}}
+\newcommand{\vc}{\mathsf{vc}}
+\newcommand{\vr}{\mathsf{vr}}
+\newcommand{\poly}{\mathsf{poly}}
+\newcommand{\add}{\mathsf{add}}
+\newcommand{\mul}{\mathsf{mul}}
+\newcommand{\view}{\mathsf{View}}
+\newcommand{\trace}{\textsc{Trace}}
+\newcommand{\bpp}{\mathbf{BPP}}
+\newcommand{\hilbert}{\mathcal{H}}
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\braket}[2]{\langle#1|#2\rangle}
+\newcommand{\puncture}{\mathsf{Puncture}}
+\newcommand{\sigp}[1]{{\Sigma}_{#1}^p}
+\newcommand{\pip}[1]{{\Pi}_{#1}^p}
+
+% -------------------------------------------------------------------------
+% Document variables
+% -------------------------------------------------------------------------
+
+\def\mytitle{\textbf{Solutions to Extremal Combinatorics}}
+\title{\mytitle}
+\author{Naman Kumar}
+
+% -------------------------------------------------------------------------
+% Document start
+% -------------------------------------------------------------------------
+\begin{document}
+	\maketitle
+	\pagestyle{fancy}
+	\begin{abstract}
+		 The following document contains solutions to selected problems in the book `Extremal Combinatorics' by Stasys Jukna. Some problems which are either trivial or require nothing more than brute force/proof mirroring have been omitted.
+	\end{abstract}
+
+	\newpage
+	\tableofcontents
+	\newpage
+	
+	% -------------------------------------------------------------------------
+	% Document content start
+	% -------------------------------------------------------------------------
+	
+	\section{Counting}
+	\label{sec:counting}
+	\input{tex_files/ch2}
+	
+
+
+
+	\bibliographystyle{apalike} % 'alpha' is also good
+	%\bibliography{bibliography} % Reference to 'bibliography.bib'
+\end{document}

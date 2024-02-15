@@ -1,0 +1,36 @@
+\documentclass{tufte-book}
+%\usepackage{lipsum}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+\newenvironment{loggentry}[2]% date, heading
+{\noindent\textbf{#2}\marginnote{#1}\\}{\vspace{0.5cm}}
+
+\begin{document}
+	
+	
+	\begin{loggentry}{2024-Feb-14}{New Theory Frontiers}
+		Had a conversation with Jiayu in the morning, in which we discussed that we would not be working on things for a couple weeks, which gives me some time to think and retread on some of the problems I'm interested in solving. What I need to do is thoroughly go through some basic algorithmic and probabilistic problem-solving techniques from a mathematical standpoint. I've found a few resources towards this goal:
+		\begin{itemize}
+			\item The book 'Extremal Combinatorics.' I will try to go through the first section of this book with good writing.
+			\item Ryan O'Donnell's Probability and Computing lecture notes from 2009, which are probably worth going through as well.
+			\item Salil Vadhan's course 'A Theorists Toolkit' from 2005, which consists of 12 lectures. Will probably go through them at some point.
+			\item Finally, Babai's notes on 'Linear Algebra methods in Combinatorics.' Will refer to them if I ever need them.
+		\end{itemize}
+	
+	Anyway, I then read chapter $1$ of the book on some basic counting. Did the binomial theorem and some definitions of factorials. This is slightly interesting:\\
+	
+	\textbf{Lemma.} $\sum_{i=0}^k\binom{n}{i}\leq\left(\frac{en}{k}\right)^k$.\\
+	
+	Proof uses the identity $1+t<e^t$. Factorial approximations may be useful; the stirling formula is supposedly important.
+	$$n!=\left(\frac{n}{e}\right)^n\sqrt{2\pi n}e^{\alpha_n}$$
+	where $1/(12n+1)<\alpha_n<1/12n$.
+	
+	Did the stars and bars counting method and some stuff related to partitions.
+	
+	Turan's number is quite interesting here, because I remember it being defined only in the context of graphs. An intuitive explanation for this is as follows: the number $T(n,k,l)$ with $(l\leq k\leq n)$ is the smallest number of $l$-element subsets of an $n$ element set $X$ in a way such that every $k$-element subset of $X$ contains at least one of those sets. Think of it this way: we have some set $X$ of size $n$. Then we can divide it into $l$-element subsets. Suppose we pick a $k$-element subset; assuming that we have enough $l$-element subsets, $k$ will necessarily contain one of them. Clearly, if $l$ is simply $\binom{n}{l}$, this is true, but we can choose less of them as well. The smallest number we can choose is $T(l,k,n)$.
+	\end{loggentry}
+
+\end{document}
