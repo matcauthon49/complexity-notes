@@ -1,10 +1,39 @@
+\subsection{Review}
+\begin{itemize}
+	\item The binomial theorem and binomial coefficients provide a way to count objects.
+	\item Exact values of binomial coefficeints are hard to compute, but they can be roughly estimated. Consider the following inequalities:
+	\begin{enumerate}
+		\item $1+t<e^t$ for $t\neq 0$
+		\item $1-t>e^{-t-t^2/2}$ for $0<t<1$
+	\end{enumerate}
+	they can be used to prove 
+	\begin{align*}
+		\left(\frac{n}{k}\right)^k\leq\binom{n}{k}&\hspace{10mm} \sum_{i=1}^k\binom{n}{i}\leq \left(\frac{en}{k}\right)^k.
+	\end{align*}
+	\item The Stirling approximation is another approximation which shows
+	$$n!\approx\left(\frac{n}{e}\right)^n\sqrt{2\pi n}e^{\alpha_n}$$
+	with $1/(12n+1)<\alpha_n<1/12n$. Similarly, an asymptotic approximation for the $k$-factorial is
+	$$(n)_k=n^ke^{-k^2/2n-k^3/6n^2+o(1)}$$ which is valid for $k=o(n^{3/4}).$
+	\item The stars and bars technique allows you to partition a set into ordered partitions.
+	\item Double counting can be done using incidence matrices: in this technique you count the rows and the columns of a zero-one matrix, which should yield the same sums.
+	\item The number of vertices in a graph with odd degree is even.
+	\item Jensen's Inequality: a function is convex if 
+	$$f(\lambda a+(1-\lambda)b)\leq \lambda f(a)+(1-\lambda)f(b)$$
+	for $0\leq\lambda\leq 1$. Suppose that each $\lambda_i$ is in $[0,1]$, and $\sum\lambda_i=1$. If $f$ is convex then
+	$$f\left(\sum_{i=1}^n\lambda_ix_i\right)\leq\sum_{i=1}^n\lambda_if(x_i).$$
+	\item Inclusion-exclusion provides a way to sum up all the elements in some sets that intersect.
+	\item Derangements are permutations which don't fix any points.
+\end{itemize}
+
+\subsection{Problems}
+
 \paragraph{In-text.} Prove:
 \begin{align}
 	&\sum_{x\in Y} d(x)=\sum_{A\in\mathcal{F}}|Y\cap A| \text{ for any } Y\subseteq X.\\
 	&\sum_{x\in X}d(x)^2=\sum_{x\in\mathcal{F}}\sum_{x\in A}d(x)=\sum_{A\in\mathcal{F}}\sum_{B\in\mathcal{F}}|A\cap B|.
 \end{align}
 
-\paragraph{Answer.} We can proceed by a counting argument. For the first part, consider the incidence matrix $M=(m_{x,a})$ of $\mathcal{F}$. Adding the rows belonging to the elements of $x\in Y$ gives us the left hand side. If we `slice' the matrix in this way, however (removing all the rows belonging to elements $x\notin Y$) then summing via the columns we get the sum of only those elements which are both in $A$ and in $Y$, ie. $|A\cap Y|$.
+\paragraph{Answer.} We can proceed by a counting argument. For the first part, consider the incidence matrix $M=(m_{x,a})$ of $\mathcal{F}$. Adding the rows belonging to the elements of $x\in Y$ gives us the left hand side. If we `slice' the matrix in this way, however (removing all the rows belonging to elements $x\notin Y$) then summing via the columns we get the sum of only those elements which are both in $A$ and in $Y$, i.e. $|A\cap Y|$.
 
 For the second part, it is enough to notice that if we replace each entry $1$ in the incidence matrix with $d(x)$, then adding along the rows gives $\sum_{x\in X}d(x)^2$ while adding along the columns gives the term in the central equality (we add $d(x)$ for every $x\in A$, and then we sum over each of the $A$s). The final equality follows from noticing that
 \begin{align*}
@@ -18,3 +47,93 @@ where the second equality follows from substituting the first part.
 	\line(1,0){70}
 \end{center}
 
+\paragraph{Question 1.1} In how many ways can we distribute $k$ balls to $n$ boxes so that each box has at most one ball?
+
+\paragraph{Answer.} Depends on whether $k\leq n$ or $k>n$. If $k\leq n$, we can choose $\binom{n}{k}$ boxes, and the balls can be ordered in $k!$ ways. it follows that the number of ways is $\binom{n}{k}k!=(n)_k$.
+
+If $k>n$, then there are $\binom{k}{n}$ ways we can choose the balls, and we can order them in $n!$ ways. This gives us the answer of $(k)_n$.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.2} Show that for every $k$ the product of any $k$ consecutive natural numbers is divisible by $k!$.
+
+\paragraph{Answer.} Let the $k$ numbers be $n+1,\dots,n+k$. Consider the number $\binom{n+k}{k}$. This is the number of ways you can choose $k$ numbers from $n+k$ numbers, and is an integer. Expanding, we get
+$$\binom{n+k}{k}=\frac{n!}{k!(n-k)!}$$
+which clearly shows that $k!$ divides $(n+1)(n+2)\dots(n+k)$.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.3} Show that the number of pairs $(A,B)$ of distinct subsets of $\{1,\dots,n\}$ with $A\subset B$ is $3^n-2^n$.
+
+\paragraph{Answer.} We can proceed as follows. Select a subset $S$ of size $k$, and then select a subset of $S$. The former can be done in $\binom{n}{k}$ ways, while the latter can be done in $2^k-1$ ways. This gives us the sum
+$$\sum_{k=0}^n\binom{n}{k}(2^k-1)$$
+The binomial theorem tells us that this is equal to $(2+1)^n-(1+1)^n=3^n-2^n$.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.4} Show that
+$$\binom{n}{k}=\frac{n}{k}\binom{n-1}{k-1}.$$
+
+\paragraph{Answer.} We will count the number of ways to choose $k$ balls from $n$ balls. Just choosing the $k$ balls is the left hand side. Alternately, we can choose one ball first, and then choose $k-1$ balls from the remaining $n-1$ balls. However, this leads to a $k$-recounting, since each $k$ size subset is selected $k$ times (once when each element is the `fixed' element). We are done.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.6} There is a set of $2n$ people: $n$ male and $n$ female. A good party is a set with the same number of male and female. How many possibilities are there to build such a good party?
+
+\paragraph{Answer.} For each $k$ there are $k$ ways to choose men and $k$ ways to choose women, so the total number of parties of size $k$ are $\binom{n}{k}^2$. Adding over all the $k$'s we get
+$$\sum_{i=0}^{n}\binom{n}{i}^2.$$
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.7}
+Use Proposition 1.3 to show that
+$$\sum_{i=0}^r\binom{n+i-1}{i}=\binom{n+r}{r}$$
+
+\paragraph{Answer.} We expand the RHS using Pascal's identity, then recursively expand one of the terms.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.8} Let $0\leq a\leq m\leq n$ be integers. Show that
+$$\sum_{i=m}^n\binom{i}{a}=\binom{n+1}{a+1}-\binom{m}{a+1}.$$
+
+\paragraph{Answer.} Same trick as the previous question, expand $\binom{n+1}{a+1}$.
+
+ \begin{center}
+ 	\line(1,0){70}
+ \end{center}
+
+\paragraph{Question 1.9} Prove the Cauchy-Vandermonde identity:
+$$\binom{p+q}{k}=\sum_{i=0}^k\binom{p}{i}\binom{q}{k-i}.$$
+
+\paragraph{Answer.} We count twice. The left is selecting $k$ items from $p+q$ items. Another way we can count this is to select $i$ items from $p$ items and $k-i$ items from $q$ items, then add over every $i$.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.10} Show that
+$$\sum_{k=0}^n\binom{n}{k}^2=\binom{2n}{n}.$$
+
+\paragraph{Answer.} Start with the previous problem, then set $p=q=k=n$. It follows that
+$$\binom{2n}{n}=\sum_{k=0}^n\binom{n}{k}\binom{n}{n-k}.$$ However, we know that to choose $k$ things, we can choose $k$ or choose $n-k$, so the latter terms are equal.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.11} Prove the following analogy of the binomial theorem for factorials:
+$$(x+y)_n = \sum_{k=0}^n\binom{n}{k}(x)_k(y)_{n-k}.$$
+
+\paragraph{Answer.} Immediately follows from the same consideration as the typical proof of the binomial theorem.
