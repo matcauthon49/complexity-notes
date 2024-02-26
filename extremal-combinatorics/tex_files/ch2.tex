@@ -137,3 +137,13 @@ $$\binom{2n}{n}=\sum_{k=0}^n\binom{n}{k}\binom{n}{n-k}.$$ However, we know that 
 $$(x+y)_n = \sum_{k=0}^n\binom{n}{k}(x)_k(y)_{n-k}.$$
 
 \paragraph{Answer.} Immediately follows from the same consideration as the typical proof of the binomial theorem.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 1.28} This took me way too much fucking time, unfortunately. Here's how you do it:
+
+First, let $|E|$ be the number of edges in the graph. Note that $|B|D\geq|E|\geq|A|d$ by definition, since the \textit{minimum} number of edges leaving $A$ is $|A|d$, and the \textit{maximum} number of edges leaving $B$ is $|B|D$. Together with the fact given in the question this gives $|A|d=|B|D$. Furthermore, because the number of edges is sandwiched between these two, quantities, we know that $E=|A|d$. This tells us that every vertex in $A$ \textit{must} have degree $d$.
+
+It follows that the number of edges leaving $A_0$ is $|A_0|d$. 
