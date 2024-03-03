@@ -1,0 +1,26 @@
+\section{Secure $N$-party Computation}
+
+It's probably worth reiterating some of the formalisms of these definitions with a bit more lucidity, just as a simple reference and as some sort of illumination.
+
+\subsection{Real World Instantiation} In the real world, $N$ parties have inputs $\mathbf{x}=(x_1,\dots,x_n)$, an agreed-upon function $f:(x_1,\dots,x_n)\mapsto(y_1,\dots,y_n)$ and they follow a protocol $\Pi$ which gives them the set of \textit{party outputs} $\out_{\Pi}(\lambda,\mathbf{x}):=(y_1,\dots, y_n)$. Assume that $t$ of these parties are controlled by the adversary; define the \textit{view} $\view_{\Pi,\mathcal{A}}(\lambda, \mathbf{x})$ to be the set of all inputs of corrupted parties, along with messages exchanged that the adversary has sent, received, or eavesdropped-upon.
+
+\begin{definition}[Real World Distribution] The real-world output $\real_{\Pi,\mathcal{A}}(\lambda,\mathbf{x})$ is defined as the tuple
+	$$\real_{\Pi,\mathcal{A}}(\lambda,\mathbf{x}):=(\out_{\Pi}(\lambda,\mathbf{x}),\view_{\Pi,\mathcal{A}}(\lambda, \mathbf{x})).$$	
+\end{definition}
+
+\subsection{Ideal World Instantiation} In the ideal world, there is no protocol, only a functionality $\mathcal{F}$ which takes in inputs from each party, computes the output $f$, and returns $(f(x_1),\dots,f(x_n))$ to the parties. The output, $\out_{F}(\lambda,\mathbf{x})$ is the same \textbf{--} the output of the parties after the protocol execution \textbf{--} while instead of the \textit{view} (which is, of course, not identical to that of the actual ideal-world `protocol' execution; a protocol could be multi-round), there is the \textit{view of a simulator} (a `fake' adversary which works in the ideal world, but has access to the inputs of the real adversary), which is the output of the simulator on any given execution. 
+
+\begin{definition}[Ideal World Distribution] The ideal-world output $\ideal_{\mathcal{F},\mathcal{S}}(\lambda,\mathbf{x})$ is defined as the tuple
+$$\ideal_{\mathcal{F},\mathcal{S}}(\lambda,\mathbf{x}):=(\out_{\mathcal{F}}(\lambda,\mathbf{x}),\view_{\mathcal{F},\mathcal{S}}(\lambda, \mathbf{x})).$$	
+\end{definition}
+
+Note that these distributions are \textit{joint} distributions.
+
+\subsection{Secure $N$-Party Protocol}
+
+\begin{definition}[$t$-Privacy of a Protocol]
+	An $N$-Party protocol $\Pi$ is considered $t$-private if for any PPT adversary that corrupts $t$ of the parties, there exists a PPT simulator such that
+	$$\{\ideal_{\mathcal{F},\mathcal{S}}(\lambda,\mathbf{x})\}\equiv\{\real_{\Pi,\mathcal{A}}(\lambda,\mathbf{x})\}.$$
+\end{definition}
+
+\paragraph{Remark.} There's two examples here of the non-privacy of a protocol. One of them is a function which takes no inputs and outputs a random $b\leftarrow\{0,1\}$ to one of the parties, say $P_0$. The protocol in which $P_1$ samples a bit and sends it to $P_0$ is not secure since if $P_1$ is corrupted, the view of the adversary is different; it has the bit $b$ in it. Similarly, if a functionality takes no input and outputs $pq$, $(p+q)$ to the parties, then, again, the protocol in which $P_0$ chooses $p,q$ and sends $p+q$ is insecure since it learns the numbers $p$ and $q$.

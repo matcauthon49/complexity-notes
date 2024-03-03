@@ -1,0 +1,56 @@
+\section{Oblivious Transfer}
+
+Oblivious Transfer is a simple MPC functionality parametrized by a selection of sender inputs and a receiver index. 
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\textbf{Parameters:} The sender $S$ has a selection of $N$ input strings $(m_0,\dots,m_{N-1})$, while the receiver $R$ has an index $i\in[N]$.\\
+		\textbf{Outputs:} $S$ receives nothing while $R$ receives $m_i$.
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{$1$-out-of-$N$ Oblivious Transfer.}
+	\label{fig:OT}
+\end{figure}
+
+\subsection{Protocol for $1$-out-of-$2$ OT}
+
+We now demonstrate a simple protocol for $1$-out-of-$2$ OT \cite{esgot}. We begin with a CPA-secure encryption scheme $(\mathsf{Gen},\mathsf{Enc},\mathsf{Dec})$, and define the notion of oblivious sampling.
+
+\begin{definition}[PKE with Obliviously Sampleable Encryption Key]
+	An encryption scheme $(\mathsf{Gen},\mathsf{Enc},\mathsf{Dec})$ has obliviously sampleable public keys if there exist algorithms $\mathsf{Samp}$ and $\mathsf{pkSamp}$ such that 
+	\begin{itemize}
+		\item $\{\mathsf{Samp}(1^\lambda)\}$ is computationally indistinguishable from $\{\pk:(\pk,\sk)\rgets\mathsf{Gen}(1^\lambda)\}$.
+		\item $\{(\pk,r):r\rgets\{0,1\}^\secpar, \pk\leftarrow\mathsf{Samp}(1^\secpar;r)\}$ is computationally indistinguishable from $\{(\pk,r):(\pk,\sk)\rgets\gen, r\gets\mathsf{pkSim}(\pk)\}$.
+	\end{itemize}
+\end{definition}
+
+The protocol proceeds as follows.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{itemize}
+			\item Receiver runs $(\pk,\sk)\gets\gen(1^\secpar)$ and $\pk'\gets\mathsf{Samp}(1^\secpar)$ and sets $\pk_b=\pk$, and $\pk_{1-b}=\pk'$.
+			\item Receiver sends $\pk_0$ and $\pk_1$.
+			\item Sender encrypts $c_i=\enc_{\pk_i}(m_i)$.
+			\item Sender sends $c_0, c_1$.
+			\item Receiver decrypts $m_b = \dec_{\sk_b}(c_b)$.
+		\end{itemize}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{$1$-out-of-$2$ Oblivious Transfer from obliviously sampleable PKE.}
+	\label{fig:piot}
+\end{figure}
