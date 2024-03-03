@@ -1,78 +1,19 @@
-\paragraph{Question 3.1} Show that the following language is undecidable:
-\begin{equation*}
-	\left\{\lfloor M\rfloor: M \text{ is a machine that runs in } 100n^2+200 \text{ time}\right\}
-\end{equation*}
-\paragraph{Answer.} We use simple diagonalization. Suppose to the contrary that this language is decidable; define $M$ to be the TM which outputs $1^{100|x|^2+201}$ if $M_x$ runs in time $100|x|^2+200$ on input $x$ and $0$ otherwise. Now let $M=M_i$ for some $i$ in a universal encoding of Turing Machines, and we run $M$ on $i$. Clearly this leads to a contradiction because $M_i$ must print $0$ if $M_i$ runs for time $100i^2+201$ and vice-versa. So this other language is decidable. But any machine which decides $L$ can decide the other language, which proves that $L$ must be undecidable as well.
+\subsection{Review}
 
-\begin{center}
-	\line(1,0){70}
-\end{center}
+Some filling-in-the-details here, in order to make sure that I'm completely understanding what's happening.
 
-\paragraph{Question 3.2} Show that $\mathbf{SPACE}(n)\neq\np$. (Note that we do not know if either class is contained in the other.)
+\textbf{Page 29, Prop. 2.8.} The final inequality follows from the averaging principle, but it's not as immediate as meets the eye. We basically use the fact that the elements of $\mathcal{F}$ form a partition of the vertices of $G$, and the fact that every single one of them is a clique. In particular, for any $X,Y\in\mathcal{F}$, the edges from $X$ to $Y$ are not \textit{complete}, and hence $X\cup Y$ is not a clique (also because of the independence of $\alpha$, none of the subsets are cliques either). This means that this is a complete characterization of \textit{all the cliques} in the graph. We then get that the average size of a clique is
+$$\frac{1}{|\mathcal{F}|}\sum{X_i\in\mathcal{F}}|X_i| = \frac{n}{|\mathcal{F}|}$$
+and it follows from the averaging principle there exists some clique with size greater than or equal to the average clique, and hence
+$$\omega(G)\geq\frac{n}{|\mathcal{F}|}.$$
 
-\paragraph{Answer.} We will use here \textit{space hierarchy} theorem, which states that for all time-constructible $f(x)$ and $g(x)$ such that $f(x)=o(g(x))$, 
-\begin{equation*}
-	\mathbf{SPACE}(f(x))\subsetneq\mathbf{SPACE}(g(x)).
-\end{equation*}
+\textbf{}
 
-Our proof strategy will be as follows: we will show that the class $\np$ is closed under polynomial-time reductions, and that $\mathbf{SPACE}(n)$ is not. Since these two classes have different closure properties, we can conclude they are not the same class.
+\subsection{Problems}
 
-To show the former, assume that $L_1\in\np$ and that $L_2$ is polynomial-time reducible to $L_1$. Then an $\np$-algorithm for $L_2$ is to first deterministically reduce it to $L_1$ (which can be done in polynomial time), and then run the appropriate $L_1$-sequence. This proves that $L_2\in\np$ and that $\np$ is closed under polynomial-time reductions.
-
-To show that $\mathbf{SPACE}(n)$ is not closed under polynomial-time reductions, just notice that any language $\mathbf{SPACE}(n^2)$ can be reduced to $\mathbf{SPACE}(n)$ by padding an instance $|x|$ with $1^{|x|^2}$, which can be done in polynomial time. However, we know by the space hierarchy theorem that $\mathbf{SPACE}(n)\subsetneq\mathbf{SPACE}(n^2)$, and so we can conclude that that $\mathbf{SPACE}(n)$ is not closed under polytime reductions, so we are done.
-
-\begin{center}
-	\line(1,0){70}
-\end{center}
-
-\paragraph{Question 3.3} Show that there is a language $B\in\mathbf{EXP}$ such that $\np^B\neq\p^B$.
-
-\paragraph{Answer.} The language $B$ in the Baker-Gill-Solovay theorem is in $\mathbf{EXP}$, since it can be decided by a machine that runs $M_i$ on the input for $2^n/10$ steps, which is allowed by $\mathbf{EXP}$.
-
-\begin{center}
-	\line(1,0){70}
-\end{center}
-
-\paragraph{Question 3.4} Say that a class $C_1$ is \textit{superior} to a class $C_2$ if there is a machine $M_1$ in class $C_1$ such that for every machine $M_2$ in class $C_2$ and every large enough $n$ there is an input of size between $n$ and $n^2$ on which $M_1$ and $M_2$ answer differently.
-\begin{enumerate}
-	\item[(a)] Is $\mathbf{DTIME}(n^{1.1})$ superior to $\mathbf{DTIME}(n)$?
-	\item[(b)] Why does our proof of the Nondeterministic Hierarchy Theorem not prove $\mathbf{NTIME}(n^{1.1})$ superior to $\mathbf{NTIME}(n)$?
-\end{enumerate}
-
-\paragraph{Answer.}
-\begin{enumerate}
-	\item[(a)] Yes. Consider the function $f(x)$ which takes $1\mapsto 1$, $2\mapsto 1$, $3\mapsto 2$, $4\mapsto 1$, $5\mapsto 2$, $6\mapsto 3$, $7\mapsto 1$ and so on. This function is computable in polynomial time and forms a counting of TMs such that for TM there is a large enough $n$ such that the description of the TM appears between $n$ and $n^2$ for all TMs. Then run $D$ given in the proof of the deterministic time-hierarchy theorem on this TM labling instead. It follows that $\mathbf{DTIME}(n^{1.1})$ is superior to $\mathbf{DTIME}(n)$.
-	\item[(b)] The proof does not immediately work because $f(i+1)>f(i)^2$ for large enough $i$.
-\end{enumerate}
-
-\begin{center}
-	\line(1,0){70}
-\end{center}
-
-\paragraph{Question 3.5} Show that there exists a function that is not time-constructible.
-
-\paragraph{Answer.} Consider a numbering of Turing Machines and define the function $f$ such that
-$$f(1^x)=\begin{cases}
-	1\text{ if $M_x(x)$ works for $0$ steps or longer than $1$ step}\\
-	0\text{ otherwise.}
-\end{cases}$$
-
-Clearly there exists no Turing machine which computes this function, since it disagrees with every Turing Machine $M_x$ on the input $1^x$. Hence the function is not time-constructible.
-
-\begin{center}
-	\line(1,0){70}
-\end{center}
-
-\paragraph{Question 3.6}
-\begin{itemize}
-	\item[(a)] Prove that the function $H$ defined in the proof of theorem $3.3$ is computable in polynomial time.
-	\item[(b)] Let $\mathsf{SAT}_H$ be defined as in the proof of Theorem $3.3$ for a polynomial-time computable function $H:\mathbb{N}\rightarrow\mathbb{N}$ such that $\lim_{n\rightarrow\infty}H(n)=\infty.$ Prove that if $\sat_H$ is $\np$-complete, then $\sat$ is in $\p$.
-\end{itemize} 
-
-\paragraph{Answer.} \begin{itemize}
-	\item[(a)] We can incrementally compute $H(n)$ by starting from $i=1$ and proceeding to $i\leq\log n$. To do this we need to simulate $\log\log n$ machines on inputs of length $\log n$, where the number of steps is at most $o(n)$. Furthermore, we need to compute $\sat$ on these imputs, but this can be done simply by brute force since the size of the $\sat$ instance is at most $\log n$. The entire procedure is polynomial time.
-	
-	\item[(b)] Suppose that $\sat_H$ is $\np$-complete. Then there is a polytime reduction from $\sat$ to $\sat_H$. Let the time complexity of this reduction be $p(|x|)$ for some polynomial $p$, and let the monomial corresponding to the leading coefficient of $p$ be $n^c$ for some constant $c$. Since $H(n)$ grows faster than any constant, we take instances $n$ of size such that $H(n)>2^c$. Now consider a $\sat$ instance of the size $n$. By the time complexity of the reduction, we can reduce it to a $\sat_H$ instance of length at most $n^c$.
-	
-	The size of a $\sat_H$ instance is $|x|+|x|^{H(|x|)}$, where $|x|$ is the size of the $\sat$ instance encoded in the $\sat_H$ instance. Suppose that the size of the $\sat$ instance is greater than  $n^{c/2^c}$. Then the total size of the $\sat_H$ instance will be $>{n}^{c}$. Thus, the size of the $\sat$ instance must decrease with each iteration of reduction. It follows that if we `hard-code' the solution to all $\sat$ instances in a TM up till the first $n$ such that $H(n)>2^c$, we can solve all the others in polynomial time using downward self-reducibility. We are done. 
-\end{itemize}
+\paragraph{Question 2.1} Start with the sets $A_i$ and construct new sets $A_{i,j}=A_i\cap A_j$ and $A_i' = A_i\setminus(\cap_{j\neq i} A_j)$. For each $i$, $A_i = A_i'\cup (\cup_{j\neq i} [A_i\cap A_j])$. Then by the union bound we have
+$$|A_i|\leq |A_i'|+\sum_{i\neq j}|A_i\cap A_j|$$
+and it follows that 
+$$\sum_{i=1}^m |A_i| \leq \sum_{i=1}^m |A_i'| + \sum_{i}\sum_{j\neq i}|A_i\cap A_j|$$
+Since $|A_i\cap A_j|\leq t$, we have the latter half of the RHS to be $\leq t\binom{m}{2}$. For the former, we notice that $A_i'\cap A_j'=\emptyset$ by definition. Then $\sum_{i=1}^m |A_i'|\leq n$. We have
+$$\sum_{i=1}^m |A_i|\leq n + t\binom{m}{2}.$$
