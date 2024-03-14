@@ -1,8 +1,14 @@
-\begin{thebibliography}{EGL85}
+\begin{thebibliography}{PVW08}
 
 \bibitem[EGL85]{esgot}
 Shimon Even, Oded Goldreich, and Abraham Lempel.
 \newblock A randomized protocol for signing contracts.
 \newblock {\em Commun. ACM}, 28(6):637–647, jun 1985.
+
+\bibitem[PVW08]{dualmode}
+Chris Peikert, Vinod Vaikuntanathan, and Brent Waters.
+\newblock A framework for efficient and composable oblivious transfer.
+\newblock In David Wagner, editor, {\em Advances in Cryptology -- CRYPTO 2008},
+  pages 554--571, Berlin, Heidelberg, 2008. Springer Berlin Heidelberg.
 
 \end{thebibliography}

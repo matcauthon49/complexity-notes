@@ -1,3 +1,106 @@
 \section{Modifications to OT}
 
-We first construct two variants of 
+We first construct two variants of OT that provide the additional property of \textit{information-theoretic} security against the receiver.
+
+\subsection{Information-Theoretically Secure OT}
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{itemize}
+			\item Sender samples $(\pk,\sk)\gets\gen(1^n)$ and sends $\pk$ to receiver.
+			\item Receiver samples $s_0, s_1\gets\{0,1\}$ and sets $c_b = \enc_\pk(s_b)$ and $c_{1-b}\gets\mathsf{Samp}$, and sends $c_0$, $c_1$ to sender.
+			\item Sender sets $s_i=\dec_\sk(c_i)$ and sends $x_i\oplus s_i$.
+			\item Receiver computes
+			$$x_b=s_b\oplus (s_b\oplus x_b).$$
+		\end{itemize}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{Variant of OT.}
+	\label{fig:VOTPLUS}
+\end{figure}
+
+Informally, the security against sender is dependent on the (computational) indistinguishability of determining $c_{1-b}$ from an honestly sampled encryption and on the security of the encryption scheme, while the security against the receiver is information-theoretic since it cannot determine $s_1$. 
+
+We see another variant of OT, secure under the DDH assumption.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{itemize}
+			\item Receiver samples $r\gets\mathbb{Z}_q$ and sets $(h_0, h_1)=(g_0^r, g_1^{r+b})$. It sends $(h_0, h_1)$.
+			\item Sender samples $a_0, b_0, a_1, b_1\gets\mathbb{Z}_q$ and sets $$c_i = (g_0^{a_i}g_1^{b_i}, h_0^{a_i}h_1^{b_1}/(i\cdot g_1^{b_1})x_i)$$ and sends $(c_0, c_1)$.
+			\item Receiver parses $c_b$ as $(c^1, c^2)$ and computes $x_b = c^2/(c^1)^r$.
+		\end{itemize}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{Variant of OT secure assuming DDH.}
+	\label{fig:DDHOT}
+\end{figure}
+
+\subsubsection{Dual-Mode Cryptosystem} A dual-mode cryptosystem serves as a generic `toggling' mechanism to achieve information-theoretic OT against the sender or the receiver. A strict definition of dual-mode cryptosystem is given in \cite{dualmode}, along with a generic technique that realizes the OT functionality.
+
+\subsection{Extending the Usefulness of OT}
+
+We now look at two techniques which allow subtle (more useful) variants of OT.
+
+\subsubsection{Domain Extension} This technique allows us to obtain OT for $\ell$-bit strings from OT for $\secpar$-bit strings. Note that $\secpar$ is the security parameter \textbf{--} hence, it has to be a reasonable key length.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{itemize}
+			\item Sender samples $k_0, k_1\gets\{0,1\}^\secpar$ and sends it to $\func_\mathsf{OT}$.
+			\item Receiver sends $b$ to $\func_\mathsf{OT}$ and receives $k_b$.
+			\item Sender sends $c_i = \enc_{k_i}(m_i)$ for each $i\in\{0,1\}.$
+			\item Receiver decrypts $m_b = \dec_{k_b}(c_b)$.
+		\end{itemize}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{OT Domain Extension.}
+	\label{fig:OTDomainExtension}
+\end{figure}
+
+\subsubsection{$1$-out-of-$N$ OT from $1$-out-of-$2$ OT}
+
+For simplicity, we can assume $N=2^k$ for some $k$. Suppose that the receiver wants $m_\alpha$ for some $|\alpha|=k$.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{itemize}
+			\item Sender samples $k_i^{b}$ for $b\in\{0,1\}$ and $i\in[k]$, and submits $(k_i^0, k_i^{1})$ to $\func_\mathsf{OT}$.
+			\item Receiver sends $\alpha_i$ to the $i$th OT.
+			\item Sender sets
+			$$c_\beta = m_\beta\oplus \bigoplus_{i=1}^k F_{k_{\beta_i}}(\beta)$$ and sends each $c_\beta$. 
+			\item Receiver decrypts $m_\alpha = c_\alpha\oplus\bigoplus_{i=1}^k F_{k_{\alpha_i}}(\alpha)$.
+		\end{itemize}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{$1$-out-of-$N$ OT from $1$-out-of-$2$ OT.}
+	\label{fig:1outofNOT}
+\end{figure}

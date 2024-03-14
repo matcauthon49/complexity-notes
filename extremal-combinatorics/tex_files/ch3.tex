@@ -7,8 +7,6 @@ $$\frac{1}{|\mathcal{F}|}\sum{X_i\in\mathcal{F}}|X_i| = \frac{n}{|\mathcal{F}|}$
 and it follows from the averaging principle there exists some clique with size greater than or equal to the average clique, and hence
 $$\omega(G)\geq\frac{n}{|\mathcal{F}|}.$$
 
-\textbf{}
-
 \subsection{Problems}
 
 \paragraph{Question 2.1} Start with the sets $A_i$ and construct new sets $A_{i,j}=A_i\cap A_j$ and $A_i' = A_i\setminus(\cap_{j\neq i} A_j)$. For each $i$, $A_i = A_i'\cup (\cup_{j\neq i} [A_i\cap A_j])$. Then by the union bound we have
@@ -17,3 +15,33 @@ and it follows that
 $$\sum_{i=1}^m |A_i| \leq \sum_{i=1}^m |A_i'| + \sum_{i}\sum_{j\neq i}|A_i\cap A_j|$$
 Since $|A_i\cap A_j|\leq t$, we have the latter half of the RHS to be $\leq t\binom{m}{2}$. For the former, we notice that $A_i'\cap A_j'=\emptyset$ by definition. Then $\sum_{i=1}^m |A_i'|\leq n$. We have
 $$\sum_{i=1}^m |A_i|\leq n + t\binom{m}{2}.$$
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 2.3} (Did this \textit{without} the hint, very happy.) 
+
+Let $d(x)$ be the degree of $x$ in $\mathcal{F}$. Then $p(x)=d(x)^2 + (m-d(x))^2$. This is because the first condition is satisfied by all $(A,B)$ such that $x$ is in both of them, ie. exactly $d(x)$ of them, while the latter is satisfied by $(A,B)$ such that $x$ is in neither of them. We can expand this to write $p(x) = 2d(x)^2 + m^2 - 2md(x) = m^2 - 2d(x)(m-d(x))$. Now $d(x)(m-d(x))\leq m^2/4$ (which can be easily checked \textbf{--} it reaches its maximum at $d(x)=m/2$) and we have $p(x)\geq m^2-2(m^2/4)=m^2/2$.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 2.7} We argue using induction. Suppose that every $(r-1)$-partite $2$-clique free graph contains $\leq 2m^{r-1-1/2^{r-2}}$ edges. The proposition is trivially true for $r=1$.
+
+Consider now an $r$-partite graph with more than $2m^{r-1/2^{r-1}}$ vertices. We can write any $r$-partite graph $G$ as as a subset of the cartesian product $X \times V = V_1\times\dots\times V_{r-1}\times V$. Define the sets $A_v=\{x\in X:(x,v)\in G\}$; we will apply the lemma to them. Clearly the size of $X$ is at most $m^{r-1}$, and so the size of any $A_v$ is at most $m^{r-1}$, and since $v\in V$ we have that the number of such sets is at most $m$. We calculate the average size of the sets as $m^{r-1}/m$, which is $m^{r-2}$. 
+
+Taking $w=\frac{1}{2}m^{1/2^{r-1}}$, we can apply the lemma to find two sets $A_i$ and $A_j$ such that their intersection is of size more than
+$$\frac{n}{2w^{2}}=\frac{2m^{r-1}}{m^{1/2^{r-2}}}=2m^{r-1-1/2^{r-2}}.$$
+Then $A_i\cap A_j$ must contain a $2$-clique. But this $2$-clique is connected to $i$ and $j$, and hence there is an $m$-partite $2$-clique in this graph.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 2.8} This is nearly identical to that of the in-text question of chapter 1, but slightly involved. The double counting trick works.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
