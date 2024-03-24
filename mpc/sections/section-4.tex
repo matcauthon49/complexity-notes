@@ -1,0 +1,89 @@
+\section{OT Extension}
+
+As we have seen, it is possible to perform OT of strings of long length using OT for strings of shorter length and a PRG. We will now answer the question of whether it's possible to perform a greater \textit{number} of OTs using a fewer number of OTs.
+
+\subsection{IKNP OT Extension} 
+
+In this section we will describe the IKNP OT Extension protocol from \cite{iknp}. The protocol works by extending $\secpar$ pairs of $m$-bit OT to $m$ pairs of $\ell$-bit OT. A full description is below. We note by $\mathbf{OT}^{a}_{b}$ an $a$-pairs $b$-bit OT functionality.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\textbf{Parameters:} The Sender holds $m$ pairs of $\ell$-bit strings $\{(m_{i,b})\}$. The receiver holds $m$ selection bits $r=(r_1,\dots, r_m)$. $H:[m]\times\{0,1\}^{\secpar}\rightarrow\{0,1\}^\ell$ is a random oracle.\\
+
+		\textbf{Protocol:}		 
+		\begin{itemize}
+			\item Sender selects $s\rgets\{0,1\}^\secpar$ and sends it to $\mathbf{OT}^{\secpar}_{m}$ (as the receiver).
+			\item Receiver selects a random matrix
+			$$T=
+			\begin{pmatrix}
+				T_1 & T_2 & \hdots & T_\secpar
+			\end{pmatrix}_{m\times \secpar}=\begin{pmatrix}
+			T^1 \\ T^2 \\ \vdots \\ T^m
+		\end{pmatrix}_{m\times \secpar}$$ and sends the inputs $\{(T_i, r\oplus T_i)\}_{i\in[\secpar]}$ to $\mathbf{OT}^{\secpar}_{m}$ (as the sender).
+			\item Denote by $Q$ the matrix received by the sender, which is
+			$$Q=
+			\begin{pmatrix}
+				Q_1 & Q_2 & \hdots & Q_\secpar
+			\end{pmatrix}_{m\times \secpar} = \begin{pmatrix}
+			Q^1 \\ Q^2 \\ \vdots \\ Q^m
+		\end{pmatrix}_{m\times \secpar}$$
+		\item Sender sends 
+		$$(y_{j,0}, y_{j,1})=(x_{j,0}\oplus H(j,Q^j), x_{j,1}\oplus H(j, Q^j\oplus s)).$$
+		\item For each $1\leq j\leq m$, receiver outputs $y_{j, r_j}\oplus H(j, T^j)$.
+		\end{itemize}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{The IKNP OT Extension Protocol.}
+	\label{fig:IKNP}
+\end{figure}
+
+\paragraph{Correctness.} We will now see why this protocol works. Consider $r_i = 0$ for some $i$. It follows that $(r_i)_{j\in[\lambda]}\oplus T^i = T^i$, and so $T^i=Q^i$ (regardless of whatever $s$ was). It immediately follows that $H(j, T^j) = H(j, Q^j)$.
+
+On the other hand, if $r_i = 1$, then $Q^i = (s \cdot r)\oplus T^j =s\oplus  T^j$. Correctness follows similarly.
+
+\paragraph{Discussion.} The protocol provides perfect security against a semi-honest (even malicious) sender and statistical security against a semi-honest receiver. The protocol is instantiated with a random oracle, but can be instantiated with a weaker primitive called a \textit{correlation-robust hash function}.
+
+\begin{definition}[Correlation Robustness]
+	An efficiently computable function $h:\{0,1\}^{*}\rightarrow \{0,1\}$ is said to be \textit{correlation robust} if for any polynomial $q$ and PPT adversary $\mathcal{A}$ there exists a negligible function $\epsilon(\cdot)$ such that
+	$$|\Pr[\mathcal{A}(t_1,\dots,t_m, h(t_1\oplus s), \dots, h(t_m\oplus s))=1]-\Pr[\mathcal{A}(U_{(t+1)m})=1]|\leq\epsilon(\secpar)$$
+	where $m\leq q(\secpar)$ and $|C|\leq p(\secpar)$. The probability is taken over random and independent choices of $s, t_i\rgets\{0,1\}^\secpar$ for $i\in[m]$.
+\end{definition}
+
+The authors also modify the scheme to achieve full security against a malicious receiver through a cut-and-choose mechanism, in which a the receiver and the sender execute $k$ instances of the (committed) protocol in parallel and the sender randomly checks whether a certain number of instances were correctly performed (and aborts otherwise).
+
+\paragraph{Parameters.} The above protocol is secure as long as $m=2^{o(\secpar)}$. Note that if, say, $m = 2^\secpar$, then the security of the correlation-robust hash function breaks down since this allows a `repeat', i.e. $H(j, Q^j\oplus s)$ will be called twice for some value of $j$. We will see the impossibility of $2^{\Omega(\secpar)}$-pairs OT extension in Minicrypt along with other impossibility results below. This concludes that the protocol is asymptotically optimal.
+
+\paragraph{Improvements.} \cite{vole} achieves $n$ pairs using $\log n$ OTs and the (computational) LPN (Learning Parity with Noise) assumption. \cite{softspokenot} presents a practical improvement on the protocol.
+
+\subsection{Feasibility of OT Extension}
+
+The protocol of \cite{iknp} is not the only OT Extension protocol. Before this, \cite{beaver1996correlated} showed that $k$ OTs can be extended to $k^c$ OTs making a non-black box use of a one way function. The protocol of \cite{iknp} can gain up to superpolynomial OTs with a black-box use of an OWF, but makes use of a Random Oracle.
+
+\textbf{Open Problem.} Is there a protocol for (subexponential) OT extension that makes black-box use of a One Way Function without a random oracle?
+
+\cite{lindell2013feasibility} study the feasibility of OT Extension, and prove the following results.
+
+\begin{theorem}[Information-Theoretic OT Extension]
+	If there exists an OT extension protocol from $n$ to $n+1$ (with security in the presence of static semi-honest adversaries), then there exist one-way functions.
+\end{theorem}
+
+This proves that OT cannot be extended information-theoretically. Note that while the protocol of \cite{iknp} does not make explicit use of an OWF, it does use a random oracle (which implies OT extension).
+
+\begin{theorem}[Adaptively Secure OT Extension]
+	If there exists an OT extension protocol from $n$ to $n+1$ that is secure in the presence of adaptive semi-honest adversaries, then there exists an oblivious transfer protocol that is secure in the presence of static semi-honest adversaries.
+\end{theorem}
+
+This proves that any adaptive OT extension protocol involves constructing statically secure OT extension from scratch. The problem of constructing adaptively secure OT extension was solved in \cite{byali2017fast}, though their protocol uses public-key cryptography.
+
+\begin{theorem}[Extending Logarithmic OTs]
+	If there exists an OT extension protocol from $f(n)=O(\log n)$ to $f(n)+1$ that is secure in the presence of static malicious adversaries, then there exists an OT protocol that is secure in the presence of static malicious adversaries.
+\end{theorem}
+
+This proves that any OT extension protocol that have exponential extension must make use of an exponential number of OTs itself.

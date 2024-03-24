@@ -1,14 +1,54 @@
-\begin{thebibliography}{PVW08}
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{BCG{\etalchar{+}}19}
+
+\bibitem[BCG{\etalchar{+}}19]{vole}
+Elette Boyle, Geoffroy Couteau, Niv Gilboa, Yuval Ishai, Lisa Kohl, and Peter
+  Scholl.
+\newblock Efficient pseudorandom correlation generators: Silent ot extension
+  and more.
+\newblock Cryptology ePrint Archive, Paper 2019/448, 2019.
+\newblock \url{https://eprint.iacr.org/2019/448}.
+
+\bibitem[Bea96]{beaver1996correlated}
+Donald Beaver.
+\newblock Correlated pseudorandomness and the complexity of private
+  computations.
+\newblock In {\em Proceedings of the twenty-eighth annual ACM symposium on
+  Theory of computing}, pages 479--488, 1996.
+
+\bibitem[BPRS17]{byali2017fast}
+Megha Byali, Arpita Patra, Divya Ravi, and Pratik Sarkar.
+\newblock Fast and universally-composable oblivious transfer and commitment
+  scheme with adaptive security.
+\newblock {\em Cryptology ePrint Archive}, 2017.
 
 \bibitem[EGL85]{esgot}
 Shimon Even, Oded Goldreich, and Abraham Lempel.
 \newblock A randomized protocol for signing contracts.
 \newblock {\em Commun. ACM}, 28(6):637–647, jun 1985.
 
+\bibitem[IKNP03]{iknp}
+Yuval Ishai, Joe Kilian, Kobbi Nissim, and Erez Petrank.
+\newblock Extending oblivious transfers efficiently.
+\newblock In Dan Boneh, editor, {\em Advances in Cryptology - CRYPTO 2003},
+  pages 145--161, Berlin, Heidelberg, 2003. Springer Berlin Heidelberg.
+
+\bibitem[LZ13]{lindell2013feasibility}
+Yehuda Lindell and Hila Zarosim.
+\newblock On the feasibility of extending oblivious transfer.
+\newblock In {\em Theory of Cryptography Conference}, pages 519--538. Springer,
+  2013.
+
 \bibitem[PVW08]{dualmode}
 Chris Peikert, Vinod Vaikuntanathan, and Brent Waters.
 \newblock A framework for efficient and composable oblivious transfer.
 \newblock In David Wagner, editor, {\em Advances in Cryptology -- CRYPTO 2008},
   pages 554--571, Berlin, Heidelberg, 2008. Springer Berlin Heidelberg.
+
+\bibitem[Roy22]{softspokenot}
+Lawrence Roy.
+\newblock Softspokenot: Communication--computation tradeoffs in ot extension.
+\newblock Cryptology ePrint Archive, Paper 2022/192, 2022.
+\newblock \url{https://eprint.iacr.org/2022/192}.
 
 \end{thebibliography}

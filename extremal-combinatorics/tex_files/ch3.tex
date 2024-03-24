@@ -45,3 +45,24 @@ Then $A_i\cap A_j$ must contain a $2$-clique. But this $2$-clique is connected t
 \begin{center}
 	\line(1,0){70}
 \end{center}
+
+\paragraph{Question 2.10} Let $A_1,\dots, A_N$ be subsets of some $n$-element set $X$, and suppose that these sets have average size at least $\alpha n$. Show that for every $s\leq (1-\epsilon)\alpha N$ with $0<\epsilon<1$, there are indices $i_1, i_2,\dots, i_s$ such that 
+$$|A_{i_1}\cap\dots\cap A_{i_s}|\geq (\epsilon\alpha)^sn.$$
+
+\paragraph{Answer.} (The ideas are correct, but this is unfortunately quite poorly written; I should've been doing this on paper instead of trying to work it out in my head.)
+
+Consider the bipartite graph $(X, V, E)$ where $V = [N]$ and $x\in A_i\iff (x,i)\in E$. Since the size of each $A_i$ is at least $\alpha n$, the number of edges is at least $\alpha nN$. For any family of $s$ sets $\{A_{i_j}\}_{j\in[s]}$, every element in the intersection forms a $(1, s)$-star. By preceding as in the proof of 2.10, we can bound the number of stars as
+$$n\binom{|E|/n}{a}\leq \sum_{x\in V}\binom{d(x)}{a}$$
+which, setting $a=s\leq (1-\epsilon)\alpha N$ and $|E|=\alpha nN$ gives us
+$$n(\alpha N - (1-\epsilon)\alpha N)^s\leq\sum_{x\in V}\binom{d(x)}{s}$$
+which gives 
+$$n(\epsilon\alpha N)^s\leq \sum_{x\in V}\binom{d(x)}{s}.$$
+By expanding the factorial and using $n!/(n-s)!\leq n^s$, we can set
+$$n(\epsilon\alpha N)^s\leq \sum_{x\in V} d(x)^s$$
+The latter, however, on applying the problem 2.8, gives us
+$$n(\epsilon\alpha N)^s\leq\sum_{(i_1,\dots, i_s)}|A_{i_1}\cap\dots\cap A_{i_s}|\leq \binom{N}{s}|A_{i_1}\cap\dots\cap A_{i_s}|$$
+where we take the intersection of the largest size to be $(i_1,\dots,i_s)$. We can again use the factorial inequality to get
+\begin{align*}
+	n(\epsilon\alpha N)^s&\leq N^{s}|A_{i_1}\cap\dots\cap A_{i_s}|\\
+	n(\epsilon\alpha)^s&\leq |A_{i_1}\cap\dots\cap A_{i_s}|.
+\end{align*}
