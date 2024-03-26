@@ -24,7 +24,7 @@ Oblivious Transfer is a simple MPC functionality parametrized by a selection of 
 We now demonstrate a simple protocol for $1$-out-of-$2$ OT \cite{esgot}. We begin with a CPA-secure encryption scheme $(\mathsf{Gen},\mathsf{Enc},\mathsf{Dec})$, and define the notion of oblivious sampling.
 
 \begin{definition}[PKE with Obliviously Sampleable Encryption Key]
-	An encryption scheme $(\mathsf{Gen},\mathsf{Enc},\mathsf{Dec})$ has obliviously sampleable public keys if there exist algorithms $\mathsf{Samp}$ and $\mathsf{pkSamp}$ such that 
+	An \rarrow encryption scheme $(\mathsf{Gen},\mathsf{Enc},\mathsf{Dec})$ has obliviously sampleable public keys if there exist algorithms $\mathsf{Samp}$ and $\mathsf{pkSamp}$ such that 
 	\begin{itemize}
 		\item $\{\mathsf{Samp}(1^\lambda)\}$ is computationally indistinguishable from $\{\pk:(\pk,\sk)\rgets\mathsf{Gen}(1^\lambda)\}$.
 		\item $\{(\pk,r):r\rgets\{0,1\}^\secpar, \pk\leftarrow\mathsf{Samp}(1^\secpar;r)\}$ is computationally indistinguishable from $\{(\pk,r):(\pk,\sk)\rgets\gen, r\gets\mathsf{pkSim}(\pk)\}$.
@@ -54,3 +54,59 @@ The protocol proceeds as follows.
 	\caption{$1$-out-of-$2$ Oblivious Transfer from obliviously sampleable PKE.}
 	\label{fig:piot}
 \end{figure}
+
+\subsection{Assumptions Underlying OT}
+
+Unfortunately, it is not known how oblivious transfer can be constructed from symmetric-key primitives. In particular, we can show that black-box constructions of oblivious transfer from OWFs is impossible.
+
+\begin{theorem}[Black-Box Separation of OT and OWFs]
+	There \rarrow is no construction of Oblivious Transfer that makes black-box use of One-Way Functions.
+\end{theorem}
+
+\begin{proof}
+	We will show that Any Oblivious Transfer protocol implies a Key Exchange Protocol.  The result then follows from \cite{impagliazzo1989limits}, which separates key exchange from all one-way functions.
+	
+	The KE protocol is very simple:
+	\begin{enumerate}
+		\item $P_0$ samples $r\rgets\{0,1\}^\secpar$ and sends $(r, 0^\secpar)$ to $\func_\mathsf{OT}$.
+		\item $P_1$ sends $0$ to $\func_\mathsf{OT}$.
+		\item $P_1$ receives $r$.
+	\end{enumerate}
+
+	We claim that this is a secure key exchange. The proof proceeds by hybrid argument: first, the above protocol is indistinguishable to an outside observer from a hybrid in which $P_1$ inputs $1$ instead of $0$ by receiver security, and secondly it is indistinguishable from a hybrid in which $P_0$ inputs $(0^\lambda,0^\lambda)$ instead by sender security. However, this second hybrid is (information-theoretically) independent of $r$, and it follows that the eavesdropper cannot gain any information about $r$, and we are done.
+\end{proof}
+
+\subsection{OT in the Correlated Randomness Model}
+
+We now consider the correlated randomness model, where at the beginning of the protocol both $P_0$ and $P_1$ are given random strings $r_0$ and $r_1$ by a trusted party such that they satisfy some correlation. In particular, we will show how to obtain OT from a set of \textit{random OTs.}
+
+\begin{definition}[Random OTs]
+	We \rarrow say that two parties $P_0$ and $P_1$ possess random OT correlations if party $P_0$ (the sender) possesses $(\tilde{m}_0, \tilde{m}_1)\rgets\{0,1\}^{2\secpar}$ and party $P_1$ (the receiver) possesses $(\vec{b},(\tilde{m}_{b_i})_{i\in\secpar})\in\{0,1\}^{2\secpar}$ where $\vec{b}\rgets\{0,1\}^\secpar$.
+\end{definition}
+
+The above definition formalizes this idea of $P_0$ and $P_1$ having `random OT correlations,' i.e. $P_0$ has random sender inputs and $P_1$ has random receiver inputs and outputs. We now see how this can be utilized to get OT.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\textbf{Parameters:} $P_0$ has input bits $(m_0, m_1)$, while $P_1$ has input bit $s$.\\
+		\textbf{Correlations:} $P_0$ has random bits $(\tilde{m}_0,\tilde{m}_1)$, while $P_1$ has random bits $(b, \tilde{m}_b)$.\\
+		
+		\textbf{Protocol:}
+		\begin{enumerate}
+			\item $P_1$ sends $b\oplus s$ to $P_0$.
+			\item $P_0$ replies with $(r_0, r_1):=(m_{0}\oplus\tilde{m}_{b\oplus s}, m_{1}\oplus\tilde{m}_{1\oplus b\oplus s}).$
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{OT from Random OT.}
+	\label{fig:rot}
+\end{figure}
+
+Correctness of the above protocol follows from simple considerations: if $s=0$, then $b\oplus s = b$, and in this case $P_1$ can decrypt the string $r_0$ since it knows $\tilde{m}_b$. If $s=1$, then $b\oplus s = b\oplus 1$, and in this case $P_1$ can decrypt $r_1$ since it knows $\tilde{m}_{b\oplus s\oplus 1}=\tilde{m}_b$.

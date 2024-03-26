@@ -25,6 +25,7 @@
 \usepackage{tikz-cd}% For diagrams
 \usepackage{listings}% To include source-code
 \usepackage{booktabs}% Professional tables
+\usepackage{thmtools}
 %\usepackage{txfonts}% Font which looks less 'academic'
 %\usepackage[sc]{mathpazo}% A nice font, alternative to CM
 %\usepackage[headings]{fullpage}% Make margins smaller
@@ -98,6 +99,12 @@
 \newcommand{\puncture}{\mathsf{Puncture}}
 \newcommand{\sigp}[1]{{\Sigma}_{#1}^p}
 \newcommand{\pip}[1]{{\Pi}_{#1}^p}
+
+
+\declaretheorem[name=Theorem, numberwithin=section]{theorem}
+\declaretheorem[name=Lemma, numberwithin=section]{lemma}
+\declaretheorem[name=Inequality, numberwithin=section]{inequality}
+\declaretheorem[name=Definition, numberwithin=section]{definition}
 
 % -------------------------------------------------------------------------
 % Document variables

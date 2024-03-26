@@ -1,5 +1,85 @@
 \subsection{Review}
 
+\subsubsection{Bounds on Intersection Size}
+
+\begin{theorem}[Corr\'adi 1969]
+	Let $A_1,\dots,A_n$ be $r$-element sets and $X$ be their union. If $|A_i\cap A_j|\leq k$ for all $i\neq j$, then
+	$$|X|\geq\frac{r^2N}{r+(N-1)k}$$
+\end{theorem}
+
+\begin{proof}
+	Simple counting.
+\end{proof}
+
+\begin{theorem}[Erd\"os 1964]
+	Let $X$ be a set of $n$ elements $x_1,\dots, x_n$ and let $A_1,\dots, A_n$ be $N$ subsets of $X$ of average size $n/w$. If $N\geq 2kw^k$, then there exist $A_{i_1},\dots,A_{i_k}$ such that
+	$$|A_{i_1}\cap\dots\cap A_{i_k}|\geq \frac{n}{2w^k}.$$
+\end{theorem}
+
+\begin{proof}
+	Simple counting, Jensen's inequality.
+\end{proof}
+
+\subsubsection{Graphs with no 4-cycles}
+
+\begin{theorem}[Reiman 1958]
+	If $G=(V,E)$ on $n$ vertices has no $4$-cycles, then
+	$$|E|\leq \frac{n}{4}(1+\sqrt{4n-3}).$$
+\end{theorem}
+\begin{proof}
+	Uses the `cherry-counting' technique, where the inequality follows from counting the number of `cherries' each vertex can be the midpoint of, and the number of cherries each pair of vertices can form the endpoint of. Both have different bounds.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}
+			\node[shape=circle,draw=black,fill=black,inner sep=0pt,minimum size=8pt] (A) at (-1,1) {};
+			\node[shape=circle,draw=black,fill=black,inner sep=0pt,minimum size=8pt] (B) at (1,0) {};
+			\node[shape=circle,draw=black,fill=black,inner sep=0pt,minimum size=8pt] (C) at (-1,-1) {};
+			
+			\path [-] (A) edge node[] {} (B);
+			\path [-] (C) edge node[] {} (B);
+
+		\end{tikzpicture}
+		\caption{A Cherry.}
+	\end{figure}
+\end{proof}
+
+\subsubsection{Graphs with no induced $4$-cycles}
+
+If you can get $G'$ from $G$ by deleting vertices and ALL edges attached to that vertex from $G$ then $G'$ is an induced subgraph. If you cannot, then $G$ is weakly $G'$-free. We denote $\omega(G)$ to be the number of vertices in the biggest complete subgraph of $G$.
+
+\begin{theorem}
+	If an $n$-vertex graph $G=(V,E)$ is weakly $C_4$-free, then 
+	$$\omega(G)\geq 0.4\frac{|E|^2}{n^3}.$$
+\end{theorem}
+\begin{proof}
+	Long and complex, look at page 27-29.
+\end{proof}
+
+\subsubsection{Zarankiewicz's Problem}
+
+The Zarankiewicz problem asks how many entries an $n\times n$ binary matrix can contain so that it has no $a\times b$ submatrix with all-$1$ entries. This is equivalent to asking the maximum number of edges in a $K_{a-b}$-free bipartite graph.
+
+Let $k_{a,b}(m,n)$ be the number of edges of a maximum $K_{a,b}$-free graph on $m,n$ vertices.
+
+\begin{theorem}[K\H{o}v\'ari, S\'os and Tur\'an]
+	For all natural numbers $n\geq a\geq 2$, we have
+	$$k_{a,,b}(m,n)\leq (a-1)^{1/b}nm^{1-1/b}+(b-1)m.$$
+\end{theorem}
+
+\begin{proof}
+	Cherry-counting, except this time you count stars (one vertex in $V_1$ and all other vertices in $V_2$).
+\end{proof}
+
+\begin{theorem}[Ossowski 1993]
+	Let $G=(V_1,V_2,E)$ be a bipartite graph with no isolated vertices, $|E|<(k+1)^r$ edges and $d(y)\leq r$ for all $y\in V_2$. Then we can delete at most $k$ vertices from $V_1$ so that the resulting graph has no $(r-a+1)\times a$ clique for $a=1,2,\dots,r$.
+\end{theorem}
+
+
+
+
+\subsubsection{Omitted Details}
+
 Some filling-in-the-details here, in order to make sure that I'm completely understanding what's happening.
 
 \textbf{Page 29, Prop. 2.8.} The final inequality follows from the averaging principle, but it's not as immediate as meets the eye. We basically use the fact that the elements of $\mathcal{F}$ form a partition of the vertices of $G$, and the fact that every single one of them is a clique. In particular, for any $X,Y\in\mathcal{F}$, the edges from $X$ to $Y$ are not \textit{complete}, and hence $X\cup Y$ is not a clique (also because of the independence of $\alpha$, none of the subsets are cliques either). This means that this is a complete characterization of \textit{all the cliques} in the graph. We then get that the average size of a clique is
@@ -66,3 +146,15 @@ where we take the intersection of the largest size to be $(i_1,\dots,i_s)$. We c
 	n(\epsilon\alpha N)^s&\leq N^{s}|A_{i_1}\cap\dots\cap A_{i_s}|\\
 	n(\epsilon\alpha)^s&\leq |A_{i_1}\cap\dots\cap A_{i_s}|.
 \end{align*}
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 2.11} This is almost trivial. Consider blocks of size less than $a/b$. Clearly the number of elements in them is at most $ma/b\leq |X|/b$. It immediately follows that blocks of size at most $a/n$ can contain at most $|X|/b$ elements, which means that at least $(1-1/b)|X|$ elements are in blocks of a greater size.
+
+\begin{center}
+	\line(1,0){70}
+\end{center}
+
+\paragraph{Question 2.12}

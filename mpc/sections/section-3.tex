@@ -50,7 +50,70 @@ We see another variant of OT, secure under the DDH assumption.
 	\label{fig:DDHOT}
 \end{figure}
 
-\subsubsection{Dual-Mode Cryptosystem} A dual-mode cryptosystem serves as a generic `toggling' mechanism to achieve information-theoretic OT against the sender or the receiver. A strict definition of dual-mode cryptosystem is given in \cite{dualmode}, along with a generic technique that realizes the OT functionality.
+\subsection{Dual-Mode Cryptosystem} A dual-mode cryptosystem serves as a generic `toggling' mechanism to achieve information-theoretic OT against the sender or the receiver. A strict definition of dual-mode cryptosystem is given in \cite{dualmode}, along with a generic technique that realizes the OT functionality.
+
+Intuitively, a dual-mode cryptosystem is a hybrid cryptosystem that has two modes: a messy mode and a decryption mode. It has several features:
+
+\begin{enumerate}
+	\item The cryptosystem is initialized with a trusted setup that produces a pair $(\crs, t)$ where $\crs$ is the common random string and $t$ is the trapdoor.
+	\item Whether the system is in messy or decryption mode is decided during setup. Given a $\crs$, the adversary cannot tell which mode the system is operating in.
+	\item There are two encryption branches. $\KeyGen$ takes the branch $\sigma\in\{0,1\}$ as input, and produces a general $\pk$ and an $\sk$ that corresponds to the particular branch.
+	\item During encryption, a branch $b$ is specified as input. $b$ could be or could not be $\sigma$.
+	\item\textbf{Messy Mode:} In this mode if branch $b\neq\sigma$, an encryption is lossy; all information about the plaintext is lost (if encrypted on $b=\sigma$, then it is a normal encryption). Given $t$, it is possible to obtain the $\sigma$ that corresponds to $\pk$. 
+	\item\textbf{Decryption Mode:} In this mode, both branches are decryptable; however, you need the trapdoor to find a key tuple $(\pk,\sk_0,\sk_1)$ which allows you to decrypt. Furthermore, $(\pk,\sk_\sigma)$ are statistically indistinguishable from $\KeyGen(\sigma)$.
+\end{enumerate}
+
+We can now proceed with a formalism.
+
+\begin{definition}[Dual Mode Cryptosystem]
+	A \rarrow dual-mode cryptosystem with message space $\{0,1\}^\ell$ consists of a tuple of probabilistic algorithms $(\mathsf{Setup},\KeyGen, \enc, \dec,\\ \mathsf{FindMessy},\mathsf{TrapKeyGen})$ that have the following properties.
+	\begin{itemize}
+		\item $\mathsf{Setup}(1^\secpar, \mu)\rightarrow (\crs, t)$. $\mu$ refers to the mode.
+		\item $\KeyGen(\sigma)\rightarrow(\pk,\sk)$. If in messy mode, $\sk$ corresponds to the branch $\sigma$.
+		\item $\enc(\pk,b,m)\rightarrow c$. $b$ is the branch.
+		\item $\dec(\sk, c)\rightarrow m$.
+		\item $\mathsf{FindMessy}(t,\pk)\rightarrow b$. Given the trapdoor (and a possibly malformed public key), the output is the messy branch of $\pk$.
+		\item $\mathsf{TrapKeyGen}(t)\rightarrow(\pk,\sk_0,\sk_1)$. Outputs a key tuple which allows you to encrypt/decrypt on both branches.
+	\end{itemize}
+\end{definition}
+
+\subsubsection{OT From Dual-Mode Cryptosystem}
+
+We now consider the OT of \cite{dualmode}, which almost trivially follows from the definition of the DMC. The protocol can be set up in either mode. In messy mode, the receiver security is computational and the sender is statistical; in decryption mode, the security properties are reversed.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\textbf{Parameters:} $S$ has input $(m_0, m_1)\in\{0,1\}^\ell$, while receiver $R$ has input $\sigma\in\{0,1\}$. Suppose that the system is setup in mode $\mu$.\\
+		
+		\textbf{Protocol:}
+		\begin{enumerate}
+			\item Both $S$ and $R$ query $\func^{\mu}_\crs$ with the appropriate session ID to get the same $\crs$ (neither of them receive $t$).
+			\item $R$ computes $(\pk, \sk)\gets\KeyGen(\sigma)$ and sends $\pk$ to $S$.
+			\item $S$ gets $\pk$ and computes $y_b\gets\enc(\pk,b,m_b)$ and sends it to $R$.
+			\item $R$ decrypts $\dec(\sk,y_\sigma)$ to obtain $m_\sigma$.
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{Two-Round OT from a Dual-Mode Cryptosystem.}
+	\label{fig:dmmodeot}
+\end{figure}
+
+\paragraph{Security.} We see briefly how this scheme provides security.
+\begin{itemize}
+	\item In messy mode, $y_\sigma$ is a correct encryption of $m_\sigma$, but $y_{1-\sigma}$ is statistically unrelated to $m_{1-\sigma}$. Thus the receiver gets no information about $m_{1-\sigma}$ at all. The receiver has computational security since $\pk$ computationally hides $\sigma$.
+	\item In decryption mode, the trapdoor allows the production of a public key which is statistically indistinguishable from a $\KeyGen(\sigma)$ output, so $\pk$ statistically hides $\sigma$. However, sender security is computational, since a `true' decryption key exists (the one output by $t$).
+\end{itemize}
+
+\subsubsection{Assumptions for Dual-Mode Cryptosystem}
+
+A dual-mode cryptosystem can be constructed based on $\mathbf{DDH}$, $\mathbf{DCR}$, $\mathbf{QR}$ and $\mathbf{LWE}$. Information about the constructions is in $\cite{dualmode}$. In particular, the construction based on $\ddh$ mimics the OT of Figure~\ref{fig:DDHOT}.
 
 \subsection{Extending the Usefulness of OT}
 

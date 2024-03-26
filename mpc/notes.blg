@@ -5,44 +5,44 @@ Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: alpha.bst
 Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: references.bib
-You've used 8 entries,
+You've used 12 entries,
             2543 wiz_defined-function locations,
-            614 strings with 5998 characters,
-and the built_in function-call counts, 3920 in all, are:
-= -- 397
-> -- 195
-< -- 6
-+ -- 71
-- -- 69
-* -- 267
-:= -- 631
-add.period$ -- 29
-call.type$ -- 8
-change.case$ -- 56
-chr.to.int$ -- 8
-cite$ -- 8
-duplicate$ -- 153
-empty$ -- 277
-format.name$ -- 78
-if$ -- 827
+            638 strings with 6596 characters,
+and the built_in function-call counts, 5624 in all, are:
+= -- 573
+> -- 255
+< -- 10
++ -- 91
+- -- 88
+* -- 374
+:= -- 886
+add.period$ -- 42
+call.type$ -- 12
+change.case$ -- 78
+chr.to.int$ -- 12
+cite$ -- 12
+duplicate$ -- 234
+empty$ -- 417
+format.name$ -- 103
+if$ -- 1197
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 6
-newline$ -- 46
-num.names$ -- 28
-pop$ -- 66
+missing$ -- 11
+newline$ -- 66
+num.names$ -- 40
+pop$ -- 95
 preamble$ -- 1
-purify$ -- 64
+purify$ -- 91
 quote$ -- 0
-skip$ -- 134
+skip$ -- 202
 stack$ -- 0
-substring$ -- 213
-swap$ -- 46
-text.length$ -- 6
-text.prefix$ -- 2
+substring$ -- 323
+swap$ -- 68
+text.length$ -- 10
+text.prefix$ -- 4
 top$ -- 0
-type$ -- 64
+type$ -- 92
 warning$ -- 0
-while$ -- 37
-width$ -- 13
-write$ -- 113
+while$ -- 55
+width$ -- 16
+write$ -- 165

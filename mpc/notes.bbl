@@ -27,17 +27,39 @@ Shimon Even, Oded Goldreich, and Abraham Lempel.
 \newblock A randomized protocol for signing contracts.
 \newblock {\em Commun. ACM}, 28(6):637–647, jun 1985.
 
+\bibitem[Gol90]{goldreich1990note}
+Oded Goldreich.
+\newblock A note on computational indistinguishability.
+\newblock {\em Information Processing Letters}, 34(6):277--281, 1990.
+
+\bibitem[Gol04]{goldreich2004foundations}
+Oded Goldreich.
+\newblock {\em Foundations of Cryptography, Volume 2}.
+\newblock Cambridge university press Cambridge, 2004.
+
 \bibitem[IKNP03]{iknp}
 Yuval Ishai, Joe Kilian, Kobbi Nissim, and Erez Petrank.
 \newblock Extending oblivious transfers efficiently.
 \newblock In Dan Boneh, editor, {\em Advances in Cryptology - CRYPTO 2003},
   pages 145--161, Berlin, Heidelberg, 2003. Springer Berlin Heidelberg.
 
+\bibitem[IR89]{impagliazzo1989limits}
+Russell Impagliazzo and Steven Rudich.
+\newblock Limits on the provable consequences of one-way permutations.
+\newblock In {\em Proceedings of the twenty-first annual ACM symposium on
+  Theory of computing}, pages 44--61, 1989.
+
 \bibitem[LZ13]{lindell2013feasibility}
 Yehuda Lindell and Hila Zarosim.
 \newblock On the feasibility of extending oblivious transfer.
 \newblock In {\em Theory of Cryptography Conference}, pages 519--538. Springer,
   2013.
+
+\bibitem[MGW87]{micali1987play}
+Silvio Micali, Oded Goldreich, and Avi Wigderson.
+\newblock How to play any mental game.
+\newblock In {\em Proceedings of the Nineteenth ACM Symp. on Theory of
+  Computing, STOC}, pages 218--229. ACM New York, NY, USA, 1987.
 
 \bibitem[PVW08]{dualmode}
 Chris Peikert, Vinod Vaikuntanathan, and Brent Waters.

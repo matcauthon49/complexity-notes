@@ -14,7 +14,7 @@
 \usepackage{tikz}
 \usepackage{algpseudocode}
 \usepackage{multirow}
-
+\usepackage{tcolorbox}
 
 \usetikzlibrary{positioning}
 
@@ -42,10 +42,14 @@
 
 \usepackage[framemethod=tikz]{mdframed}
 
+%\newtcbtheorem[number within=section]{theorem}{Theorem}%
+%{colback=RoyalBlue!5,colframe=RoyalBlue!35!black,fonttitle=\bfseries}{th}
+
 \declaretheorem[name=Theorem, numberwithin=section]{theorem}
 \declaretheorem[name=Lemma, numberwithin=section]{lemma}
 \declaretheorem[name=Inequality, numberwithin=section]{inequality}
 \declaretheorem[name=Definition, numberwithin=section]{definition}
+
 
 \usepackage[english]{babel}
 \title{\textbf{Errata to MPC Course}}
@@ -93,6 +97,19 @@
 \newcommand{\enc}{\mathsf{Enc}}
 \newcommand{\dec}{\mathsf{Dec}}
 \newcommand{\func}{\mathcal{F}}
+\newcommand{\crs}{\mathsf{crs}}
+\newcommand{\KeyGen}{\mathsf{KeyGen}}
+\newcommand{\ddh}{\mathbf{DDH}}
+\newcommand{\dcr}{\mathbf{DCR}}
+\newcommand{\qr}{\mathbf{QR}}
+\newcommand{\lwe}{\mathbf{LWE}
+}
+\newcommand{\lpn}{\mathbf{LPN}}
+\newcommand{\cdh}{\mathbf{CDH}}
+
+
+
+\newcommand{\rarrow}{\marginpar[\raggedleft\textcolor{red}{$\Longrightarrow$}]{$\Leftarrow$}}
 
 \begin{document}
 	\maketitle
@@ -103,6 +120,7 @@
 	
 	\pagebreak
 	\tableofcontents
+	\reversemarginpar
 	
 	\pagebreak
 	\input{sections/section-1.tex}
@@ -118,11 +136,18 @@
 	
 	\pagebreak
 	\input{sections/section-5.tex}
+	
+	\pagebreak
+	\input{sections/section-6.tex}
 
 	
 	\pagebreak
 	\appendix
 	
+	\pagebreak
+	\input{sections/appendix-A.tex}
+	
+	\pagebreak
 	\bibliographystyle{alpha}
 	\bibliography{references}
 	

@@ -51,9 +51,9 @@ On the other hand, if $r_i = 1$, then $Q^i = (s \cdot r)\oplus T^j =s\oplus  T^j
 \paragraph{Discussion.} The protocol provides perfect security against a semi-honest (even malicious) sender and statistical security against a semi-honest receiver. The protocol is instantiated with a random oracle, but can be instantiated with a weaker primitive called a \textit{correlation-robust hash function}.
 
 \begin{definition}[Correlation Robustness]
-	An efficiently computable function $h:\{0,1\}^{*}\rightarrow \{0,1\}$ is said to be \textit{correlation robust} if for any polynomial $q$ and PPT adversary $\mathcal{A}$ there exists a negligible function $\epsilon(\cdot)$ such that
-	$$|\Pr[\mathcal{A}(t_1,\dots,t_m, h(t_1\oplus s), \dots, h(t_m\oplus s))=1]-\Pr[\mathcal{A}(U_{(t+1)m})=1]|\leq\epsilon(\secpar)$$
-	where $m\leq q(\secpar)$ and $|C|\leq p(\secpar)$. The probability is taken over random and independent choices of $s, t_i\rgets\{0,1\}^\secpar$ for $i\in[m]$.
+	An \rarrow efficiently computable function $h:\{0,1\}^{*}\rightarrow \{0,1\}$ is said to be \textit{correlation robust} if for any polynomial $q(\cdot)$ and PPT adversary $\mathcal{A}$ there exists a negligible function $\epsilon(\cdot)$ such that
+	$$|\Pr[\mathcal{A}(t_1,\dots,t_m, h(t_1\oplus s), \dots, h(t_m\oplus s))=1]-\Pr[\mathcal{A}(U_{(\secpar+1)m})=1]|\leq\epsilon(\secpar)$$
+	where $m\leq q(\secpar)$. The probability is taken over random and independent choices of $s, t_i\rgets\{0,1\}^\secpar$ for $i\in[m]$.
 \end{definition}
 
 The authors also modify the scheme to achieve full security against a malicious receiver through a cut-and-choose mechanism, in which a the receiver and the sender execute $k$ instances of the (committed) protocol in parallel and the sender randomly checks whether a certain number of instances were correctly performed (and aborts otherwise).
@@ -71,19 +71,59 @@ The protocol of \cite{iknp} is not the only OT Extension protocol. Before this, 
 \cite{lindell2013feasibility} study the feasibility of OT Extension, and prove the following results.
 
 \begin{theorem}[Information-Theoretic OT Extension]
-	If there exists an OT extension protocol from $n$ to $n+1$ (with security in the presence of static semi-honest adversaries), then there exist one-way functions.
+	\label{otowf}
+	If \rarrow there exists an OT extension protocol from $n$ to $n+1$ (with security in the presence of static semi-honest adversaries), then there exist one-way functions.
 \end{theorem}
 
 This proves that OT cannot be extended information-theoretically. Note that while the protocol of \cite{iknp} does not make explicit use of an OWF, it does use a random oracle (which implies OT extension).
 
 \begin{theorem}[Adaptively Secure OT Extension]
-	If there exists an OT extension protocol from $n$ to $n+1$ that is secure in the presence of adaptive semi-honest adversaries, then there exists an oblivious transfer protocol that is secure in the presence of static semi-honest adversaries.
+	If \rarrow there exists an OT extension protocol from $n$ to $n+1$ that is secure in the presence of adaptive semi-honest adversaries, then there exists an oblivious transfer protocol that is secure in the presence of static semi-honest adversaries.
 \end{theorem}
 
 This proves that any adaptive OT extension protocol involves constructing statically secure OT extension from scratch. The problem of constructing adaptively secure OT extension was solved in \cite{byali2017fast}, though their protocol uses public-key cryptography.
 
 \begin{theorem}[Extending Logarithmic OTs]
-	If there exists an OT extension protocol from $f(n)=O(\log n)$ to $f(n)+1$ that is secure in the presence of static malicious adversaries, then there exists an OT protocol that is secure in the presence of static malicious adversaries.
+	If \rarrow there exists an OT extension protocol from $f(n)=O(\log n)$ to $f(n)+1$ that is secure in the presence of static malicious adversaries, then there exists an OT protocol that is secure in the presence of static malicious adversaries.
 \end{theorem}
 
 This proves that any OT extension protocol that have exponential extension must make use of an exponential number of OTs itself.
+
+\subsubsection{OT Extension Implies One-Way Functions}
+
+We now provide a sketch of the proof of Theorem~\ref{otowf}, as given in \cite{lindell2013feasibility}.
+
+\begin{lemma}[OT Extension with Polynomial Stretch]
+	Let \rarrow $f:\mathbb{N}\rightarrow\mathbb{N}$ be any polynomially-bounded function, and let $n$ be the security parameter. If there exists a protocol $\pi$ that is an OT-extension from $f(n)$ to $f(n)+1$ that is secure in the presence of adaptive, malicious adversaries, then for every polynomial $p(\cdot)$ there exists an OT-extension protocol from $f(n)$ to $p(n)$ that is secure in the presence of adaptive malicious adversaries.
+\end{lemma}
+
+\begin{proof}
+	We begin by noting that any OT-extension protocol $\pi$ can be converted into an extension protocol $\pi'$ in two phases:
+	\begin{itemize}
+		\item\textbf{Ideal OT}: In this phase, the parties make $f(n)$ calls to an ideal OT.
+		\item\textbf{Computation}: In this phase, the parties use the OT calls from the previous phase to get $f(n)+1$ OTs.
+	\end{itemize}
+	The protocol to get $p(n)$ OTs is simple: first, use the OTs from the first round to get $f(n)+1$ OTs, and then \textit{reuse} them $p(n)$-many times to get $p(n)$ OTs (each invocation adds one additional OT). The formal proof proceeds by hybrid argument.
+\end{proof}
+
+We will now use this fact in order to generate two polynomial-time constructable probability ensembles that are \textit{statistically} distinguishable but \textit{computationally} indistinguishable. The existence of such ensembles is equivalent to a one-way function, shown by \cite{goldreich1990note}. In particular, Goldreich shows that the existence of pseudorandom generators is equivalent to the existence of such ensembles.
+
+\begin{proof}[Proof Sketch of Theorem~\ref{otowf}]
+	Let $\pi$ be an $n\rightarrow 2n+1$ OT-extension.
+	Consider the random variables $X_0, X_1, X_0', X_1',\Sigma$, where
+	\begin{itemize}
+		\item $\Sigma\in\{0,1\}^{2n+1}$ is a uniformly distributed string (representing the receiver's input).
+		\item $X_i, X_i'\in\{0,1\}^{2n+1}$ are uniformly distributed under the constraint that $X^i_{\Sigma^i}={X'}^i_{\Sigma_i}$ (representing the possible sender inputs \textbf{--} if $\Sigma^i$ is $b$, then $X_b$ and $X_b'$ agree on the $i$th bit, otherwise they are independent).
+	\end{itemize}
+	Let $\textsc{trans}^\pi(x_0,x_1,\sigma)$ be the transcript of $\pi$ on the sender inputs $x_0$ and $x_1$ and on receiver input $\sigma$ (the transcript does \textit{not} contain inputs to the ideal OT functionality, however). Define the probability ensembles
+	\begin{align*}
+		\mathcal{E}^0_n &= (X_0, X_1, \Sigma,\textsc{trans}^\pi(X_0,X_1,\Sigma))\\
+		\mathcal{E}^1_n &= (X_0', X_1', \overline{\Sigma},\textsc{trans}^\pi(X_0,X_1,\Sigma))
+	\end{align*}
+	The key idea is this: these ensembles must be \textit{computationally} indistinguishable since the receiver should be completely unable to distinguish whether $X_i$ or $X_i'$ was used given the transcript, since otherwise receiver security of the OT will be violated. Similarly, $\Sigma$ should be indistinguishable from $\overline{\Sigma}$, since the sender security will be violated. Note that the first 3 elements are indistinguishable simply by construction. The non-trivial computational indistinguishability is that of the transcript.
+	
+	Note, however, that the transcript must be \textit{statistically} distinct. This is because the transcript \textit{has} to contain some meaningful information about the input distributions \textbf{--} the only way this is impossible is if \textit{all} information were communicated by the ideal OT that is executed as a subprotocol. But this cannot be the case, since only $n$ instances of OT were carried out; some information about the other $n+1$ has to be contained in this transcript. This provides an intuitive reason why the two are statistically indistinguishable.
+\end{proof}
+
+The full proof is contained in Section 3 of \cite{lindell2013feasibility}.
+

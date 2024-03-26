@@ -1,1 +1,61 @@
 \section{The GMW Protocol}
+
+We now consider the first generic protocol for multi-party computation of arbitrary circuits, introduced by Goldreich, Micali and Wigderson in \cite{micali1987play} and \cite{goldreich2004foundations}. At any given time, the protocol proceeds with both parties having shares of the value of the circuit wires. At the end, the parties have shares of the output wire labels, and they can broadcast them.
+
+\subsection{The Protocol}
+
+The protocol proceeds in stages. Suppose that $P_0$'s input is $x\in\{0,1\}^n$ and $P_1$'s input is $y\in\{0,1\}^m$. Furthermore, we consider each gate to have two input wires.
+
+\begin{figure}[h]
+	\begin{mdframed}[
+		linecolor=black,
+		linewidth=1pt,
+		roundcorner=5pt,
+		backgroundcolor=white,
+		userdefinedwidth=\textwidth,
+		]
+		\vspace{2mm}
+		\begin{enumerate}
+			\item $P_0$ samples $r\rgets\{0,1\}^n$ and sets its share of the input to be $x\oplus r$, and sends $r$ to $P_1$. $P_1$ does the same with a random string $s\rgets\{0,1\}^m.$
+			\item When encountering gate $C$ with input wire labels $w_i$ and $w_j$, $P_0$ holds shares $s^0_i$ and $s^0_j$ and $P_1$ holds shares $s^1_i$ and $s^1_c$ with $$s^b_c\oplus s^{1-b}_c=w_c$$ for $c\in\{i,j\}$.
+			\item $P_0$ and $P_1$ perform a $\mathsf{GateEVAL}$ and obtain shares $s^0_k$ and $s^1_k$ for output wire $w_k$.
+			\item Once the parties obtain shares of all the output gates, they broadcast these shares and reconstruct them to get the values of the output wires.
+		\end{enumerate}
+		\vspace{2mm}
+	\end{mdframed}
+	\caption{The GMW Protocol for secure computation of arbitrary circuits.}
+	\label{fig:GMW}
+\end{figure}
+
+We now formalize the $\mathsf{GateEVAL}$ subprotocol that allows the parties to generate output shares of a gate.
+
+\subsubsection{$\mathsf{NOT}$ Gate}
+
+A $\mathsf{NOT}$ gate only has one input, so assume that the parties hold $s^0_i$ and $s^1_i$ as input shares. Before the protocol, the parties agree that $P_0$ will flip its input bit to $\overline{s^i_0}$, which is a share of the output.
+
+\subsubsection{$\mathsf{XOR}$ Gate}
+
+Note that the output of an $\mathsf{XOR}$ gate can be rearranged as in the following:
+
+\begin{align*}
+	w_k &= w_i\oplus w_j\\
+		&= (s^0_i\oplus s^1_i)\oplus (s^0_j\oplus s^1_j)\\
+		&=(s^0_i\oplus s^0_j)\oplus (s^1_i\oplus s^1_j)
+\end{align*}
+
+Hence, $P_b$ can simply set $s^b_k:=s^b_i\oplus s^b_j$. 
+
+\subsubsection{$\mathsf{AND}$ Gate}
+
+The $\mathsf{GateEVAL}$s for the $\mathsf{NOT}$ and the $\mathsf{XOR}$ gate were non-interactive, and hence revealed no information about their shares to the other party. However, this is not the case with the $\mathsf{AND}$ gate. The evaluation of this gate proceeds as follows. 
+
+First, $P_0$ calculates the value of $w_k$ for all possible inputs of $P_1$. Set $S(a,b)$ to be the value of $w_k$ given $s^1_i = a$ and $s^1_j=b$. Then $P_0$ samples $r\rgets\{0,1\}$ and sets $s^0_k=r$. It sends 
+$$M=\begin{pmatrix}
+	r\oplus S(0,0)\\
+	r\oplus S(0,1)\\
+	r\oplus S(1,0)\\
+	r\oplus S(1,1)\\
+\end{pmatrix}$$
+as input to $\func_\mathsf{1\text{-}out\text{-}of\text{-}4\text{-}OT}$ as the sender. $P_1$ sends $s=(s^1_i, s^1_j)$ as receiver input, and sets $s^1_k$ as the OT output.
+
+Note that by the security properties of OT, $P_0$ receives no information about $P_1$'s share, while $P_1$ obtains no information about $P_0$'s share since the output has a random mask.
